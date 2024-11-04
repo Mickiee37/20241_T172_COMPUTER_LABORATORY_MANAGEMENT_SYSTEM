@@ -1,0 +1,86 @@
+body {
+    background-color: #F9F9F9;
+}
+.background-container {
+    background-image: url('/Comlab-Monitoring/client/frontend/public/BG2.png'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+
+}
+
+.header-text {
+    color: #545455;
+    font-weight: bold;
+}
+
+.table {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+    background-color: #2980B9;
+    color: #FFFFFF;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #D0E8F2;
+}
+
+.table-striped tbody tr:hover {
+    background-color: #A4D1E3;
+}
+
+.form-header {
+    color: #2980B9;
+    margin-bottom: 15px;
+}
+
+.btn {
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #3498DB, #2980B9);
+    border: none;
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(45deg, #F39C12, #E67E22);
+    border: none;
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #E74C3C, #C0392B);
+    border: none;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #2980B9, #3498DB);
+}
+
+.btn-warning:hover {
+    background: linear-gradient(45deg, #E67E22, #F39C12);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(45deg, #C0392B, #E74C3C);
+}
