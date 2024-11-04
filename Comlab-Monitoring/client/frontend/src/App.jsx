@@ -1,49 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 const App = () => {
-
   const [instructors, setInstructors] = useState([]);
+  const [newInstructor, setNewInstructor] = useState({ name: '', lastname: '', gender: '', email: '' });
+  const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', gender: '', email: '' });
+  const [deleteId, setDeleteId] = useState('');
+  const [activeForm, setActiveForm] = useState(null);
+
+  useEffect(() => {
+    fetchInstructors();
+  }, []);
 
   const fetchInstructors = async () => {
-    try{
+    try {
       const response = await fetch("http://localhost:8000/api/instructor/");
-      if(!response.ok){
-        console.error("No internet connection");
-      }
-      const data = await response.json()
+      if (!response.ok) throw new Error("No internet connection");
+      const data = await response.json();
       setInstructors(data);
-    }catch(error){
-      console.error("Error fetching instructors", error)
+    } catch (error) {
+      console.error("Error fetching instructors", error);
     }
-  }
-  useEffect(() => {
-    fetchInstructors()
-  }, [])
-  useEffect(() => {
-    console.log(instructors);
-  }, [instructors])
+  };
 
-  // Email validation function
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewInstructor((prev) => ({ ...prev, [name]: value }));
+  };
+
   const validateEmail = (email) => {
     const pattern = /^[\w.%+-]+@(student|buksu)\.buksu\.edu\.ph$/i;
     return pattern.test(email);
-  };
-
-  //POST
-  const [newInstructor, setNewInstructor] = useState({
-    name:'',
-    lastname:'',
-    gender:'',
-    email:''
-  });
-
-  const handleInputChange = (e) => {
-    const {name, value} = e.target;
-    setNewInstructor((prev) => ({
-      ...prev,
-      [name]: value
-    }));
   };
 
   const handleAddInstructor = async (e) => {
@@ -52,44 +40,24 @@ const App = () => {
       console.error("Invalid email. Only '@student.buksu.edu.ph' or '@buksu.buksu.edu.ph' emails are allowed.");
       return;
     }
-    try{
+    try {
       const response = await fetch("http://localhost:8000/api/instructor/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newInstructor)
       });
-      if(!response.ok){
-        console.error("Failed to add ");
-      }
+      if (!response.ok) throw new Error("Failed to add instructor");
       await fetchInstructors();
-      setNewInstructor({name:'', lastname:'', gender:'',email:''});
-    }catch(error){
-      console.error("Error adding Instructor", error);
+      setNewInstructor({ name: '', lastname: '', gender: '', email: '' });
+    } catch (error) {
+      console.error("Error adding instructor", error);
     }
-  }
-
-  //PUT
-  const [newInstructorPut, setNewInstructorPut] = useState({
-    id:'',
-    name: '',
-    lastname:'',
-    gender:'',
-    email:''
-  });
-
-  const handleInputChangePut = (e) => {
-    const {name, value} = e.target;
-    setNewInstructorPut((prev) => ({
-      ...prev,
-      [name]: value
-    }));
   };
 
-  useEffect(() => {
-    console.log('Updated state: ', newInstructorPut);
-  }, [newInstructorPut]);
+  const handleInputChangePut = (e) => {
+    const { name, value } = e.target;
+    setNewInstructorPut((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
@@ -97,225 +65,128 @@ const App = () => {
       console.error("Invalid email. Only '@student.buksu.edu.ph' or '@buksu.buksu.edu.ph' emails are allowed.");
       return;
     }
-    try{
+    try {
       const response = await fetch(`http://localhost:8000/api/instructor/${newInstructorPut.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newInstructorPut)
       });
-      console.log(newInstructorPut.gender)
-      if(!response.ok){
-        throw new Error('Failed to update instructor');
-      }
+      if (!response.ok) throw new Error('Failed to update instructor');
       await fetchInstructors();
-      setNewInstructorPut({name:'', lastname:'', gender:'',email:''});
-    }catch(error){
-      console.error('Error updating instructor: ', error)
+      setNewInstructorPut({ id: '', name: '', lastname: '', gender: '', email: '' });
+    } catch (error) {
+      console.error('Error updating instructor', error);
     }
   };
-  
-  //DELETE
-  const [deleteId, setDeleteId] = useState('');
 
   const handleDeleteChange = (e) => {
     setDeleteId(e.target.value);
-  }
+  };
 
-  const handleDeleteSubmit = async (e) =>{
+  const handleDeleteSubmit = async (e) => {
     e.preventDefault();
-    try{
+    try {
       const response = await fetch(`http://localhost:8000/api/instructor/${deleteId}`, {
         method: 'DELETE'
       });
-      if(!response.ok){
-        throw new Error('Failed to delete instructor');
-      }
+      if (!response.ok) throw new Error('Failed to delete instructor');
       await fetchInstructors();
       setDeleteId('');
-    }catch(error){
+    } catch (error) {
       console.error('Error deleting instructor', error);
     }
   };
+
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-5">Instructor Management</h1>
+      <h1 className="text-center mb-4">Instructor Management</h1>
 
-      <table className="table table-bordered mb-5">
-        <thead>
-          <tr >
-            <th className='bg-light'>ID</th>
-            <th className='bg-light'>Name</th>
-            <th className='bg-light'>LastName</th>
-            <th className='bg-light'>Gender</th>
-            <th className='bg-light'>Email</th>
+      <table className="table table-striped table-hover table-bordered mb-5">
+        <thead className="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>Email</th>
           </tr>
         </thead>
         <tbody>
-          {
-            instructors.length > 0 ? (
-              instructors.map(instructors => (
-              <tr key ={instructors.id}>
-                <td>{instructors._id}</td>
-                <td>{instructors.name}</td>
-                <td>{instructors.lastname}</td>
-                <td>{instructors.gender}</td>
-                <td>{instructors.email}</td>
+          {instructors.length > 0 ? (
+            instructors.map(instructor => (
+              <tr key={instructor._id}>
+                <td>{instructor._id}</td>
+                <td>{instructor.name}</td>
+                <td>{instructor.lastname}</td>
+                <td>{instructor.gender}</td>
+                <td>{instructor.email}</td>
               </tr>
-              ))
-            ):( <tr><td colSpan="5">No instructor fetched</td></tr> )
-          }
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center">No instructors fetched</td>
+            </tr>
+          )}
         </tbody>
       </table>
 
-      <hr className="my-4" />
+      <div className="d-flex justify-content-around mb-4">
+        <button className="btn btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
+        <button className="btn btn-warning" onClick={() => setActiveForm('update')}>Update Instructor</button>
+        <button className="btn btn-danger" onClick={() => setActiveForm('delete')}>Delete Instructor</button>
+      </div>
 
-      <div className="row">
-        {/* Add Instructor Form */}
-        <div className="col-md-4">
+      {/* Conditionally Render Forms */}
+      {activeForm === 'add' && (
+        <div className="mb-4">
           <h3>Add Instructor</h3>
           <form onSubmit={handleAddInstructor}>
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                name="name"
-                value={newInstructor.name}
-                onChange={handleInputChange}
-                required
-              />
+            <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructor.name} onChange={handleInputChange} required />
+            <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructor.lastname} onChange={handleInputChange} required />
+            <select className="form-select mb-2" name="gender" value={newInstructor.gender} onChange={handleInputChange} required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructor.email} onChange={handleInputChange} required />
+            <div className="text-center">
+              <button type="submit" className="btn btn-primary btn-sm w-50">Add Instructor</button>
             </div>
-            <div className="mb-3">
-              <label htmlFor="lastname" className="form-label">LastName</label>
-              <input
-                type="text"
-                className="form-control"
-                id="lastname"
-                name="lastname"
-                value={newInstructor.lastname}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="gender" className="form-label">Gender</label>
-              <select
-                className="form-select"
-                id="gender"
-                name="gender"
-                value={newInstructor.gender}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">Email</label>
-              <input
-                type="text"
-                className="form-control"
-                id="email"
-                name="email"
-                value={newInstructor.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">Add Instructor</button>
           </form>
         </div>
+      )}
 
-        {/* Update Instructor Form */}
-        <div className="col-md-4">
+      {activeForm === 'update' && (
+        <div className="mb-4">
           <h3>Update Instructor</h3>
-          <form onSubmit={handleUpdateSubmit}>  
-            <div className="mb-3">
-              <label htmlFor="updateId" className="form-label">Instructor ID</label>
-              <input
-                type="text"
-                className="form-control"
-                id="updateId"
-                name="id"
-                required
-                value={newInstructorPut.id} 
-                onChange={handleInputChangePut}
-              />
+          <form onSubmit={handleUpdateSubmit}>
+            <input type="text" className="form-control mb-2" placeholder="Instructor ID" name="id" value={newInstructorPut.id} onChange={handleInputChangePut} required />
+            <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructorPut.name} onChange={handleInputChangePut} />
+            <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} />
+            <select className="form-select mb-2" name="gender" value={newInstructorPut.gender} onChange={handleInputChangePut}>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} />
+            <div className="text-center">
+              <button type="submit" className="btn btn-warning btn-sm w-50">Update Instructor</button>
             </div>
-            <div className="mb-3">
-              <label htmlFor="updateName" className="form-label">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="updateName"
-                name="name"
-                value={newInstructorPut.name} 
-                onChange={handleInputChangePut}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="updateName" className="form-label">LastName</label>
-              <input
-                type="text"
-                className="form-control"
-                id="updateLastname"
-                name="lastname"
-                value={newInstructorPut.lastname} 
-                onChange={handleInputChangePut}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="updateGender" className="form-label">Gender</label>
-              <select
-                className="form-select"
-                id="updateGender"
-                name="gender"
-                value={newInstructorPut.gender} 
-                onChange={handleInputChangePut}
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="updateEmail" className="form-label">Email</label>
-              <input
-                type="text"
-                className="form-control"
-                id="updateEmail"
-                name="email"
-                value={newInstructorPut.email} 
-                onChange={handleInputChangePut}
-              />
-            </div>
-            <button type="submit" className="btn btn-warning">Update</button>
           </form>
         </div>
+      )}
 
-        {/* Delete Instructor Form */}
-        <div className="col-md-4">
+      {activeForm === 'delete' && (
+        <div className="mb-4">
           <h3>Delete Instructor</h3>
           <form onSubmit={handleDeleteSubmit}>
-            <div className="mb-3">
-              <label htmlFor="deleteId" className="form-label">Instructor ID</label>
-              <input
-                type="text"
-                className="form-control"
-                id="deleteId"
-                value={deleteId}
-                onChange={handleDeleteChange}
-              />
+            <input type="text" className="form-control mb-2" placeholder="Instructor ID" name="id" value={deleteId} onChange={handleDeleteChange} required />
+            <div className="text-center">
+              <button type="submit" className="btn btn-danger btn-sm w-50">Delete Instructor</button>
             </div>
-            <button type="submit" className="btn btn-danger">Delete</button>
           </form>
         </div>
-      </div>
+      )}
     </div>
   );
 };
