@@ -17,7 +17,8 @@ const instructorSchema = new Schema ({
     },
     email:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     }
 })
 const instructorModel = mongoose.model("instructor", instructorSchema);

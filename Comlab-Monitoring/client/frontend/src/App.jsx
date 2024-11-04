@@ -24,6 +24,12 @@ const App = () => {
     console.log(instructors);
   }, [instructors])
 
+  // Email validation function
+  const validateEmail = (email) => {
+    const pattern = /^[\w.%+-]+@(student|buksu)\.edu\.ph$/i;
+    return pattern.test(email);
+  };
+
   //POST
   const [newInstructor, setNewInstructor] = useState({
     name:'',
@@ -42,6 +48,10 @@ const App = () => {
 
   const handleAddInstructor = async (e) => {
     e.preventDefault();
+    if (!validateEmail(newInstructor.email)) {
+      console.error("Invalid email. Only '@student.buksu.edu.ph' or '@buksu.buksu.edu.ph' emails are allowed.");
+      return;
+    }
     try{
       const response = await fetch("http://localhost:8000/api/instructor/", {
         method: "POST",
@@ -83,6 +93,10 @@ const App = () => {
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
+    if (!validateEmail(newInstructorPut.email)) {
+      console.error("Invalid email. Only '@student.buksu.edu.ph' or '@buksu.buksu.edu.ph' emails are allowed.");
+      return;
+    }
     try{
       const response = await fetch(`http://localhost:8000/api/instructor/${newInstructorPut.id}`, {
         method: 'PUT',
@@ -150,9 +164,7 @@ const App = () => {
                 <td>{instructors.email}</td>
               </tr>
               ))
-            ):(
-              <div>No instructor fetched</div>
-            )
+            ):( <tr><td colSpan="5">No instructor fetched</td></tr> )
           }
         </tbody>
       </table>
@@ -224,7 +236,7 @@ const App = () => {
           <h3>Update Instructor</h3>
           <form onSubmit={handleUpdateSubmit}>  
             <div className="mb-3">
-              <label htmlFor="updateId" className="form-label">Instrurctor ID</label>
+              <label htmlFor="updateId" className="form-label">Instructor ID</label>
               <input
                 type="text"
                 className="form-control"
@@ -233,7 +245,6 @@ const App = () => {
                 required
                 value={newInstructorPut.id} 
                 onChange={handleInputChangePut}
-                
               />
             </div>
             <div className="mb-3">
@@ -278,14 +289,12 @@ const App = () => {
                 type="text"
                 className="form-control"
                 id="updateSection"
-                name="section"
+                name="email"
                 value={newInstructorPut.email} 
                 onChange={handleInputChangePut}
               />
             </div>
-            <div className="mb-3">
-              <button type="submit" className="btn btn-warning">Update</button>
-            </div>
+            <button type="submit" className="btn btn-warning">Update</button>
           </form>
         </div>
 
@@ -299,16 +308,11 @@ const App = () => {
                 type="text"
                 className="form-control"
                 id="deleteId"
-                name="id"
-                value = {deleteId}
+                value={deleteId}
                 onChange={handleDeleteChange}
-                required
-                
               />
             </div>
-            <div className="mb-3">
-              <button type="submit" className="btn btn-danger">Delete</button>
-            </div>
+            <button type="submit" className="btn btn-danger">Delete</button>
           </form>
         </div>
       </div>
