@@ -51,9 +51,9 @@ const updateInstructor = async (req, res) => {
             return res.status(404).json({ message: "Instructor not found" });
         }
         instructor.name = req.body.name || instructor.name;
+        instructor.lastname = req.body.lastname || instructor.lastname;
         instructor.gender = req.body.gender || instructor.gender;
-        instructor.section = req.body.section || instructor.section;
-        instructor.hobby = req.body.hobby || instructor.hobby;
+        instructor.email = req.body.email || instructor.email;
 
         const updatedInstructor = await instructor.save();
         res.status(200).json(updatedInstructor);

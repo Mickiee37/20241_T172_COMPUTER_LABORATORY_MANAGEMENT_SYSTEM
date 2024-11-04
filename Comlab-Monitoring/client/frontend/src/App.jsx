@@ -26,7 +26,7 @@ const App = () => {
 
   // Email validation function
   const validateEmail = (email) => {
-    const pattern = /^[\w.%+-]+@(student|buksu)\.edu\.ph$/i;
+    const pattern = /^[\w.%+-]+@(student|buksu)\.buksu\.edu\.ph$/i;
     return pattern.test(email);
   };
 
@@ -284,11 +284,11 @@ const App = () => {
               </select>
             </div>
             <div className="mb-3">
-              <label htmlFor="updateSection" className="form-label">Email</label>
+              <label htmlFor="updateEmail" className="form-label">Email</label>
               <input
                 type="text"
                 className="form-control"
-                id="updateSection"
+                id="updateEmail"
                 name="email"
                 value={newInstructorPut.email} 
                 onChange={handleInputChangePut}
