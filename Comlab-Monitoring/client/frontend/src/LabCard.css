@@ -1,0 +1,29 @@
+/* LabCard.css */
+.lab-card {
+    background-color: #e0eaf8;
+    border: 2px solid #87b2e3;
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 100px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 1rem; /* Add margin to the top to create space */
+}
+
+.lab-header {
+    font-weight: bold;
+    color: black;
+}
+
+.user-info {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.empty-state {
+    min-height: 50px;
+    /* Add any additional styling for empty labs here */
+}
