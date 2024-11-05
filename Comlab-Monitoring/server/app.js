@@ -1,13 +1,13 @@
-import express from "express"
-import mongoose from "mongoose"
-import cors from "cors"
-import dotenv from "dotenv"
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connect from "./DB/db.js";  // Import the connection function
 
-const app = express()
-dotenv.config()
-app.use(express.json())
+const app = express();
+dotenv.config();
+app.use(express.json());
 
-const port = process.env.PORT
+const port = process.env.PORT;
 
 const corsOptions = {
     origin: ["http://localhost:3000"],
@@ -15,27 +15,15 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-//Routes
-import instructorRoute from "./routes/instructorRoutes.js"
+// Routes
+import instructorRoute from "./routes/instructorRoutes.js";
+import dashboardRoute from "./routes/dashboardRoutes.js"; // Import dashboard route
 
 app.use("/api/instructor", instructorRoute);
+app.use("/api/dashboard", dashboardRoute);  // Use dashboard route
 
-const connect = async () => {
-    try{
-        await mongoose.connect(process.env.MONGODB)
-    }catch(error){
-        console.log(error);
-    }
-}
-
-mongoose.connection.on("disconnected", () =>{
-    console.log("Disconnected from MongoDB");
-})
-
-mongoose.connection.on("connected", () => {
-    console.log("Connected to MongoDB");
-})
+// Start the server and connect to MongoDB
 app.listen(port, () => {
-    connect();
+    connect();  // Connect to MongoDB
     console.log(`Connected to PORT ${port}`);
-})
+});

@@ -160,15 +160,15 @@ const App = () => {
         <div className="mb-4">
           <h3>Update Instructor</h3>
           <form onSubmit={handleUpdateSubmit}>
-            <input type="text" className="form-control mb-2" placeholder="Instructor ID" name="id" value={newInstructorPut.id} onChange={handleInputChangePut} required />
-            <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructorPut.name} onChange={handleInputChangePut} />
-            <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} />
-            <select className="form-select mb-2" name="gender" value={newInstructorPut.gender} onChange={handleInputChangePut}>
+            <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructorPut.id} onChange={handleInputChangePut} required />
+            <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructorPut.name} onChange={handleInputChangePut} required />
+            <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} required />
+            <select className="form-select mb-2" name="gender" value={newInstructorPut.gender} onChange={handleInputChangePut} required>
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
-            <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} />
+            <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} required />
             <div className="text-center">
               <button type="submit" className="btn btn-warning btn-sm w-50">Update Instructor</button>
             </div>
@@ -180,7 +180,7 @@ const App = () => {
         <div className="mb-4">
           <h3>Delete Instructor</h3>
           <form onSubmit={handleDeleteSubmit}>
-            <input type="text" className="form-control mb-2" placeholder="Instructor ID" name="id" value={deleteId} onChange={handleDeleteChange} required />
+            <input type="text" className="form-control mb-2" placeholder="ID" value={deleteId} onChange={handleDeleteChange} required />
             <div className="text-center">
               <button type="submit" className="btn btn-danger btn-sm w-50">Delete Instructor</button>
             </div>
