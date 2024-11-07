@@ -15,6 +15,6 @@ mongoose.connection.on("disconnected", () => {
 
 mongoose.connection.on("connected", () => {
     console.log("Connected to MongoDB");
-}); 
+});
 
 export default connect;
