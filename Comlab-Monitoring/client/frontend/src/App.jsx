@@ -4,7 +4,7 @@ import './App.css';
 
 const App = () => {
   const [instructors, setInstructors] = useState([]);
-  const [newInstructor, setNewInstructor] = useState({ name: '', lastname: '', gender: '', email: '' });
+  const [newInstructor, setNewInstructor] = useState({ id: '', name: '', lastname: '', gender: '', email: '' });
   const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', gender: '', email: '' });
   const [deleteId, setDeleteId] = useState('');
   const [activeForm, setActiveForm] = useState(null);
@@ -48,7 +48,7 @@ const App = () => {
       });
       if (!response.ok) throw new Error("Failed to add instructor");
       await fetchInstructors();
-      setNewInstructor({ name: '', lastname: '', gender: '', email: '' });
+      setNewInstructor({ id: '', name: '', lastname: '', gender: '', email: '' });
     } catch (error) {
       console.error("Error adding instructor", error);
     }
@@ -141,6 +141,7 @@ const App = () => {
         <div className="mb-4">
           <h3>Add Instructor</h3>
           <form onSubmit={handleAddInstructor}>
+            <input type="text" className="form-control mb-2" placeholder="ID (Optional)" name="id" value={newInstructor.id} onChange={handleInputChange} />
             <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructor.name} onChange={handleInputChange} required />
             <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructor.lastname} onChange={handleInputChange} required />
             <select className="form-select mb-2" name="gender" value={newInstructor.gender} onChange={handleInputChange} required>
