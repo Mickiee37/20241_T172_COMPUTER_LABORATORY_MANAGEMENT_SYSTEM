@@ -30,14 +30,14 @@ const App = () => {
   };
 
   const validateEmail = (email) => {
-    const pattern = /^[\w.%+-]+@(student|buksu)\.buksu\.edu\.ph$/i;
+    const pattern = /^[\w.%+-]+@(buksu)\.edu\.ph$/i;
     return pattern.test(email);
   };
 
   const handleAddInstructor = async (e) => {
     e.preventDefault();
     if (!validateEmail(newInstructor.email)) {
-      console.error("Invalid email. Only '@student.buksu.edu.ph' or '@buksu.buksu.edu.ph' emails are allowed.");
+      console.error("Invalid email. Only '@buksu.edu.ph' emails are allowed.");
       return;
     }
     try {
