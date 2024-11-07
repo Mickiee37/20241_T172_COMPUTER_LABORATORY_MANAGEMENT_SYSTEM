@@ -9,6 +9,7 @@ const Register = () => {
     confirmPassword: '',
   });
 
+  const [error, setError] = useState(''); // For storing validation error message
   const navigate = useNavigate(); // Initialize navigate function
 
   const handleChange = (e) => {
@@ -18,34 +19,48 @@ const Register = () => {
     });
   };
 
+  // Email validation regex for @buksu.edu.ph
+  const isValidEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@buksu\.edu\.ph$/;
+    return regex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isValidEmail(formData.email)) {
+      setError('Please enter a valid email address ending with @buksu.edu.ph');
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match!");
-    } else {
-      try {
-        const response = await fetch('http://localhost:8000/api/user/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
+      return;
+    }
 
-        const data = await response.json();
-        if (response.ok) {
-          alert('Registration successful');
-          navigate('/login'); // Redirect to login page after successful registration
-        } else {
-          alert(data.message);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Error registering user');
+    // Reset error if email is valid
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:8000/api/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('Registration successful');
+        navigate('/login'); // Redirect to login page after successful registration
+      } else {
+        alert(data.message);
       }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error registering user');
     }
   };
 
@@ -61,6 +76,7 @@ const Register = () => {
           placeholder="Email"
           required
         />
+        {error && <p className="error-message">{error}</p>} {/* Display error message if email is invalid */}
         <input
           type="password"
           name="password"

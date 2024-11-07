@@ -1,8 +1,8 @@
 // Dashboard.jsx
 import React from 'react';
 import LabCard from './LabCard';
-import './dashboard.css'; // Import dashboard-specific styles
-import PersonIcon from './PersonIcon'; // Import the PersonIcon component
+import './dashboard.css';
+import PersonIcon from './PersonIcon';
 
 const Dashboard = () => {
   const labData = [
@@ -20,7 +20,8 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <div className="icon-container"> {/* New div for positioning */}
+      {/* Wrapper div to position the icon in the upper right */}
+      <div className="icon-wrapper">
         <PersonIcon className="person-icon" />
       </div>
       {labData.map((lab) => (
