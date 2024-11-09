@@ -1,12 +1,18 @@
 import express from 'express';
-import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
 
 const router = express.Router();
 
 // Register route
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
+
+  // Check if password is at least 6 characters
+  if (password.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+  }
+
   try {
     // Check if the user already exists
     const userExists = await User.findOne({ email });
@@ -27,32 +33,33 @@ router.post('/register', async (req, res) => {
     await newUser.save();
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.error(error);
+    console.error('Error during registration:', error);
     res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
-// Check user route for login (optional)
+
+// Check user credentials route
 router.post('/check-user', async (req, res) => {
   const { email, password } = req.body;
-
   try {
-    // Check if user exists
+    // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if password matches
+    // Compare the entered password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Success
-    res.status(200).json({ message: 'User authenticated' });
+    // Send successful response if credentials match
+    res.status(200).json({ message: 'Login successful' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error during login:', error);
+    res.status(500).json({ message: 'Server error during login' });
   }
 });
 

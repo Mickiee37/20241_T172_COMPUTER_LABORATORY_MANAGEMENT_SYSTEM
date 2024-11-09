@@ -7,8 +7,8 @@ import dashboardRoutes from "./routes/dashboardRoutes.js"; // Dashboard route
 import userRoutes from "./routes/userRoutes.js"; // Correct import statement
 
 const app = express();
-dotenv.config();
 
+dotenv.config();
 
 app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
@@ -18,11 +18,10 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-
-const port = process.env.PORT || 8000; 
+const port = process.env.PORT || 8000;
 
 const corsOptions = {
-  origin: ["http://localhost:3000"], 
+  origin: ["http://localhost:3000"], // Your frontend URL
 };
 app.use(cors(corsOptions));
 

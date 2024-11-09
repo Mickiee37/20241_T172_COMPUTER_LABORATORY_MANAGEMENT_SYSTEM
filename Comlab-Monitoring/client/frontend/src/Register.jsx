@@ -40,7 +40,7 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/api/user/register', {
+      const response = await fetch('http://localhost:8000/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const Register = () => {
       const data = await response.json();
       if (response.ok) {
         alert('Registration successful');
-        navigate('/login'); // Redirect to login page after successful registration
+        navigate('/login'); 
       } else {
         alert(data.message);
       }
