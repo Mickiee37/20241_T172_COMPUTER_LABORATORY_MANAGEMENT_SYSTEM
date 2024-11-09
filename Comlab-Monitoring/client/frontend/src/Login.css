@@ -18,27 +18,34 @@
 }
 
 .login-form {
-    flex: 1;
+    flex: 0.4;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 5rem;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 10px rgba(201, 0, 0, 0.1);
     border-radius: 8px;
 }
 
 .login-form h1 {
-    font-size: 2rem;
+    font-size: 3rem;
     letter-spacing: 0.5rem;
-    color: #4A90E2;
+    color: rgb(44, 44, 211);
     margin-bottom: 0.5rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .login-form p {
     margin-bottom: 1.5rem;
     font-size: 1rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-form p.com {
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem
 }
 
 .google-login {
@@ -75,7 +82,7 @@ form input[type="password"] {
     padding: 0.8rem;
     margin-bottom: 1rem;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 15px;
 }
 
 .remember-me {
@@ -90,10 +97,10 @@ form input[type="password"] {
 
 .login-button {
     padding: 0.8rem;
-    background-color: #00bfff;
+    background-color: #2a38f3;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
@@ -104,4 +111,21 @@ form input[type="password"] {
 .register-link {
     margin-top: 1rem;
     font-size: 0.9rem;
+}
+
+.login-logo {
+    width: 150px;
+    margin-bottom: 1rem;
+}
+
+.google-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.google-icon {
+    width: 20px; /* Adjust size as needed */
+    height: 20px;
+    margin-right: 8px; /* Space between icon and text */
 }

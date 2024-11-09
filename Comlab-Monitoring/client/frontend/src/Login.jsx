@@ -30,9 +30,13 @@ const Login = () => {
 
   return (
     <div className="login-container">
+        <div className="login-image">
+            <img src="BG2.png" alt="Building" />
+      </div>
       <div className="login-form">
+      <img src="COTLOGO.png" alt="Logo" className="login-logo" /> {/* Add logo here */}
         <h1>BUKSU</h1>
-        <p>Computer Laboratory Monitoring System</p>
+        <p className="com">Computer Laboratory Monitoring System</p>
         <form onSubmit={handleLogin}>
           <input
             type="email"

@@ -61,12 +61,16 @@ body {
     background: linear-gradient(45deg, #F39C12, #E67E22);
     border: none;
     color: white;
+    
+    width: 30%;
 }
 
 .btn-danger {
     background: linear-gradient(45deg, #E74C3C, #C0392B);
     border: none;
     color: white;
+    
+    width: 30%;
 }
 
 .btn:hover {
@@ -83,4 +87,12 @@ body {
 
 .btn-danger:hover {
     background: linear-gradient(45deg, #C0392B, #E74C3C);
+    color: red;
+}
+
+
+.table .text-center {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem; 
 }

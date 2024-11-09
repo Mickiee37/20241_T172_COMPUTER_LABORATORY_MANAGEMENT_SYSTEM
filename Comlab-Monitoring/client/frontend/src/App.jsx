@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
 
 const App = () => {
@@ -97,6 +98,22 @@ const App = () => {
     }
   };
 
+  const handleUpdateClick = (instructor) => {
+    setActiveForm('update');
+    setNewInstructorPut({
+      id: instructor._id,
+      name: instructor.name,
+      lastname: instructor.lastname,
+      email: instructor.email,
+    });
+  };
+  
+  const handleDeleteClick = (id) => {
+    setActiveForm('delete');
+    setDeleteId(id);
+  };
+  
+
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Instructor Management</h1>
@@ -111,27 +128,43 @@ const App = () => {
           </tr>
         </thead>
         <tbody>
-          {instructors.length > 0 ? (
-            instructors.map(instructor => (
-              <tr key={instructor._id}>
-                <td>{instructor._id}</td>
-                <td>{instructor.name}</td>
-                <td>{instructor.lastname}</td>
-                <td>{instructor.email}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-center">No instructors fetched</td>
-            </tr>
-          )}
-        </tbody>
+  {instructors.length > 0 ? (
+    instructors.map((instructor) => (
+      <tr key={instructor._id}>
+        <td>{instructor._id}</td>
+        <td>{instructor.name}</td>
+        <td>{instructor.lastname}</td>
+        <td>{instructor.email}</td>
+        <td className="text-center"> 
+          <button
+            className="btn btn-warning btn-sm me-2"
+            onClick={() => handleUpdateClick(instructor)}
+          >
+            <i className="fas fa-edit"></i> 
+          </button>
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={() => handleDeleteClick(instructor._id)}
+          >
+            <i className="fas fa-trash-alt"></i> 
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="5" className="text-center">No instructors fetched</td>
+    </tr>
+  )}
+</tbody>
+
+
+
       </table>
 
       <div className="d-flex justify-content-around mb-4">
         <button className="btn btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
-        <button className="btn btn-warning" onClick={() => setActiveForm('update')}>Update Instructor</button>
-        <button className="btn btn-danger" onClick={() => setActiveForm('delete')}>Delete Instructor</button>
+        
       </div>
 
       {/* Conditionally Render Forms */}
@@ -144,7 +177,7 @@ const App = () => {
             <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructor.lastname} onChange={handleInputChange} required />
             <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructor.email} onChange={handleInputChange} required />
             <div className="text-center">
-              <button type="submit" className="btn btn-primary btn-sm w-50">Add Instructor</button>
+              <button type="submit" className="btn btn-primary btn-sm w-25">Add Instructor</button>
             </div>
           </form>
         </div>
@@ -159,7 +192,7 @@ const App = () => {
             <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} required />
             <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} required />
             <div className="text-center">
-              <button type="submit" className="btn btn-warning btn-sm w-50">Update Instructor</button>
+              <button type="submit" className="btn btn-warning btn-sm w-25">Update Instructor</button>
             </div>
           </form>
         </div>
@@ -171,7 +204,7 @@ const App = () => {
           <form onSubmit={handleDeleteSubmit}>
             <input type="text" className="form-control mb-2" placeholder="ID" value={deleteId} onChange={handleDeleteChange} required />
             <div className="text-center">
-              <button type="submit" className="btn btn-danger btn-sm w-50">Delete Instructor</button>
+              <button type="submit" className="btn btn-danger btn-sm w-25">Delete Instructor</button>
             </div>
           </form>
         </div>
