@@ -4,8 +4,8 @@ import './App.css';
 
 const App = () => {
   const [instructors, setInstructors] = useState([]);
-  const [newInstructor, setNewInstructor] = useState({ id: '', name: '', lastname: '', gender: '', email: '' });
-  const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', gender: '', email: '' });
+  const [newInstructor, setNewInstructor] = useState({ id: '', name: '', lastname: '', email: '' });
+  const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', email: '' });
   const [deleteId, setDeleteId] = useState('');
   const [activeForm, setActiveForm] = useState(null);
 
@@ -48,7 +48,7 @@ const App = () => {
       });
       if (!response.ok) throw new Error("Failed to add instructor");
       await fetchInstructors();
-      setNewInstructor({ id: '', name: '', lastname: '', gender: '', email: '' });
+      setNewInstructor({ id: '', name: '', lastname: '', email: '' });
     } catch (error) {
       console.error("Error adding instructor", error);
     }
@@ -62,7 +62,7 @@ const App = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     if (!validateEmail(newInstructorPut.email)) {
-      console.error("Invalid email. Only '@student.buksu.edu.ph' or '@buksu.buksu.edu.ph' emails are allowed.");
+      console.error("Invalid email. '@buksu.buksu.edu.ph' emails are allowed.");
       return;
     }
     try {
@@ -73,7 +73,7 @@ const App = () => {
       });
       if (!response.ok) throw new Error('Failed to update instructor');
       await fetchInstructors();
-      setNewInstructorPut({ id: '', name: '', lastname: '', gender: '', email: '' });
+      setNewInstructorPut({ id: '', name: '', lastname: '',email: '' });
     } catch (error) {
       console.error('Error updating instructor', error);
     }
@@ -107,7 +107,6 @@ const App = () => {
             <th>ID</th>
             <th>Name</th>
             <th>Last Name</th>
-            <th>Gender</th>
             <th>Email</th>
           </tr>
         </thead>
@@ -118,7 +117,6 @@ const App = () => {
                 <td>{instructor._id}</td>
                 <td>{instructor.name}</td>
                 <td>{instructor.lastname}</td>
-                <td>{instructor.gender}</td>
                 <td>{instructor.email}</td>
               </tr>
             ))
@@ -141,14 +139,9 @@ const App = () => {
         <div className="mb-4">
           <h3>Add Instructor</h3>
           <form onSubmit={handleAddInstructor}>
-            <input type="text" className="form-control mb-2" placeholder="ID (Optional)" name="id" value={newInstructor.id} onChange={handleInputChange} />
+            <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructor.id} onChange={handleInputChange} />
             <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructor.name} onChange={handleInputChange} required />
             <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructor.lastname} onChange={handleInputChange} required />
-            <select className="form-select mb-2" name="gender" value={newInstructor.gender} onChange={handleInputChange} required>
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
             <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructor.email} onChange={handleInputChange} required />
             <div className="text-center">
               <button type="submit" className="btn btn-primary btn-sm w-50">Add Instructor</button>
@@ -164,11 +157,6 @@ const App = () => {
             <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructorPut.id} onChange={handleInputChangePut} required />
             <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructorPut.name} onChange={handleInputChangePut} required />
             <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} required />
-            <select className="form-select mb-2" name="gender" value={newInstructorPut.gender} onChange={handleInputChangePut} required>
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
             <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} required />
             <div className="text-center">
               <button type="submit" className="btn btn-warning btn-sm w-50">Update Instructor</button>

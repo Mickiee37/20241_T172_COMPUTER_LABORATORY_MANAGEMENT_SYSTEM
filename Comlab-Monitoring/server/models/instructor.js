@@ -2,16 +2,17 @@ import mongoose from "mongoose";
 const {Schema} = mongoose;
 
 const instructorSchema = new Schema ({
+    id:{
+        type: String,
+        required: true,
+        unique: true
+    },
 
     name: {
         type: String,
         required: true
     },
     lastname:{
-        type: String,
-        required: true
-    },
-    gender:{
         type: String,
         required: true
     },
