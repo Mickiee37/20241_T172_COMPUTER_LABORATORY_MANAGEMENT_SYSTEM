@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import axios from 'axios'; // Import axios for making API calls
+import React, { useState } from "react";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "./firebase";  // Import auth and provider from firebase.js
+import { useNavigate } from "react-router-dom"; // For navigation
+import axios from "axios";  // Import axios for making API calls
 import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [error, setError] = useState(''); // For storing error messages
 
+  // Google Sign-In Handler
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("User Info: ", user);
+      navigate('/dashboard'); // Navigate to dashboard after successful login
+    } catch (error) {
+      console.error("Error during sign-in:", error.message);
+      setError(error.message); // Display error message if Google Sign-In fails
+    }
+  };
+
+  // Email/Password Login Handler
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission
+
     console.log('Email:', email);
     console.log('Password:', password);
 
     try {
-      // Send a POST request to your backend to check if the user exists
+      // Send a POST request to check if the user exists in your backend
       const response = await axios.post('http://localhost:8000/api/users/check-user', { email, password });
 
       if (response.status === 200) {
@@ -23,7 +40,7 @@ const Login = () => {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || 'Login failed'); // Show error if login fails
       console.error('Login error:', err);
     }
   };
@@ -33,6 +50,13 @@ const Login = () => {
       <div className="login-form">
         <h1>BUKSU</h1>
         <p>Computer Laboratory Monitoring System</p>
+
+        {/* Google Sign-In Button */}
+        <button onClick={handleGoogleSignIn} className="google-login">Continue with Google</button>
+
+        <hr />
+
+        {/* Email/Password Login Form */}
         <form onSubmit={handleLogin}>
           <input
             type="email"
