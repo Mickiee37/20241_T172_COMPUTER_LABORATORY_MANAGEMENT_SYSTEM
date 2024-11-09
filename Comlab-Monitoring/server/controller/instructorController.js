@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import Instructor from "../models/instructor.js"
 
-
 const getInstructors = async (req, res) => {
     try{
         const instructor = await Instructor.find();
