@@ -1,5 +1,5 @@
 import express from "express"
-import {getInstructors, getInstructor, postInstructor, deleteInstructor, updateInstructor} from "../controller/instructorController.js"
+import {getInstructors, getInstructor, postInstructor, deleteInstructor, updateInstructor} from "../controllers/instructorController.js"
 
 const router = express.Router();
 

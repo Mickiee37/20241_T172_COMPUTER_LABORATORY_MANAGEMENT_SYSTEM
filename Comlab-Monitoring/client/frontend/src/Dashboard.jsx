@@ -6,7 +6,7 @@ import PersonIcon from './PersonIcon';
 
 const Dashboard = () => {
   const labData = [
-    { labNumber: 1, currentUser: null },
+    { labNumber: 1, currentUser:{ name: 'JAYSON TUBEO', timeIn: '2024-11-11 09:00' } },
     { labNumber: 2, currentUser: null },
     { labNumber: 3, currentUser: null },
     { labNumber: 4, currentUser: null },
