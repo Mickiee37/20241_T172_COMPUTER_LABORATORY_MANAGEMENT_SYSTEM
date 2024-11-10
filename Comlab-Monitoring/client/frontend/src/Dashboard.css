@@ -1,21 +1,27 @@
-/* Dashboard.css */
-
+/* Dashboard layout */
 .dashboard {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 columns for labs */
     gap: 1rem;
     padding: 2rem;
     background-color: #d0e0f0;
-    position: relative; 
+    position: relative;
+    padding-top: 80px; /* Added more space at the top for icons */
   }
   
+  /* Wrapper for icons */
   .icon-wrapper {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px; /* Keep it below the top edge */
+    right: 20px;
     z-index: 100;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px; /* Space between the icons */
   }
   
+  /* Style for the Person icon */
   .person-icon {
     font-size: 32px;
     color: #000;
@@ -23,19 +29,19 @@
   }
   
   .person-icon:hover {
-    color: #007bff; /* Blue hover effect */
+    color: #007bff;
   }
   
   /* Style for the QR Code icon */
   .qr-icon {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 100;
+    font-size: 40px;
+    color: #000;
+    cursor: pointer;
   }
   
   .qr-icon:hover {
-    cursor: pointer;
-    color: #007bff; /* Add color on hover */
+    color: #007bff;
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
   }
   

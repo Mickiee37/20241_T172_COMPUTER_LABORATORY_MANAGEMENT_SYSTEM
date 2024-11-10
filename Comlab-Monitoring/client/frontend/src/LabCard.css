@@ -1,9 +1,11 @@
+/* Lab Card Styles */
 .lab-card {
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 15px;
     margin: 10px;
     background-color: #f9f9f9;
+    min-height: 200px; /* Set a minimum height to ensure proper layout */
   }
   
   .lab-header {
