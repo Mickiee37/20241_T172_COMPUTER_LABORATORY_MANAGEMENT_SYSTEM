@@ -1,35 +1,32 @@
-// routes/dashboardRoutes.js
 import express from "express";
-import Lab from "../DB/db.js"; // Import the Lab model
-import { verifyAuthToken } from "../middleware/auth.js";
+import Lab from "../models/dashboardSchema.js"; // Import the Lab model
 
 const router = express.Router();
 
-// Public route to get all labs
-router.get("/labs", async (req, res) => {
+// Route to update the lab with the instructor's name, time-in, and date
+router.put("/labs/:labNumber", async (req, res) => {
   try {
-    const labs = await Lab.find(); // Fetch all labs from the database
-    res.json(labs);
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving lab data" });
-  }
-});
+    const { labNumber } = req.params;
+    const { instructorName, timeIn, date } = req.body;
 
-// Public route to create a new lab
-router.post("/labs", async (req, res) => {
-  try {
-    const { labNumber, currentUser } = req.body;
-    const lab = new Lab({ labNumber, currentUser });
-    await lab.save();
-    res.status(201).json(lab);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating lab data" });
-  }
-});
+    // Find the lab by labNumber and update the currentUser field
+    const updatedLab = await Lab.findOneAndUpdate(
+      { labNumber },
+      {
+        currentUser: { name: instructorName, timeIn, date }
+      },
+      { new: true } // Returns the updated lab
+    );
 
-// Secured route that requires token verification
-router.get("/secure-data", verifyAuthToken, (req, res) => {
-  res.json({ message: "Access granted", user: req.user });
+    if (!updatedLab) {
+      return res.status(404).json({ message: "Lab not found" });
+    }
+
+    res.json(updatedLab);
+  } catch (error) {
+    console.error("Error updating lab data:", error);
+    res.status(500).json({ message: "Error updating lab data" });
+  }
 });
 
 export default router;

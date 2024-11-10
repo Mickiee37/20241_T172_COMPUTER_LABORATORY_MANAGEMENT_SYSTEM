@@ -1,7 +1,6 @@
-// LabCard.jsx
 import React from 'react';
-import './LabCard.css'; // Import LabCard-specific styles
-
+import './LabCard.css';
+import moment from 'moment';
 
 const LabCard = ({ labNumber, currentUser }) => {
   return (
@@ -13,12 +12,16 @@ const LabCard = ({ labNumber, currentUser }) => {
       {currentUser ? (
         <div className="user-info">
           <p>{currentUser.name}</p>
-          <p>Date: {currentUser.date}</p>
-          <p>Time In: {currentUser.timeIn}</p>
+          <p>
+            Date: {currentUser.timeIn ? moment(currentUser.timeIn).format('MMMM Do YYYY') : 'N/A'}
+          </p>
+          <p>
+            Time In: {currentUser.timeIn ? moment(currentUser.timeIn).format('h:mm A') : 'N/A'}
+          </p>
         </div>
       ) : (
         <div className="empty-state">
-          {/* This div will be empty if no one is using the Comlab */}
+          <p>No one is using this lab</p>
         </div>
       )}
     </div>

@@ -1,10 +1,12 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import connect from "./DB/db.js"; // MongoDB connection
-import instructorRoute from "./routes/instructorRoutes.js";
-import dashboardRoutes from "./routes/dashboardRoutes.js"; // Dashboard route
-import userRoutes from "./routes/userRoutes.js"; // Correct import statement
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connect from './DB/db.js'; // MongoDB connection
+import instructorRoute from './routes/instructorRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js'; // Dashboard route
+import userRoutes from './routes/userRoutes.js'; // User routes for registration and login
+import qrCodeRoutes from './routes/qrCodeRoutes.js'; // Import QR code routes
+import attendanceRoutes from './routes/attendanceRoutes.js'; // Import attendance routes
 
 const app = express();
 
@@ -25,10 +27,12 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Routes
-app.use("/api/instructor", instructorRoute);
-app.use("/api/dashboard", dashboardRoutes); // Use dashboard route
-app.use("/api/users", userRoutes); // Use user routes for registration and login
+// Define API routes
+app.use('/api/instructor', instructorRoute);
+app.use('/api/dashboard', dashboardRoutes);  // Dashboard route
+app.use('/api/users', userRoutes);  // User routes for registration and login
+app.use('/api/qr-code', qrCodeRoutes);  // Register QR code routes
+app.use('/api/attendance', attendanceRoutes); // Register attendance route
 
 // Start the server and connect to MongoDB
 app.listen(port, async () => {
