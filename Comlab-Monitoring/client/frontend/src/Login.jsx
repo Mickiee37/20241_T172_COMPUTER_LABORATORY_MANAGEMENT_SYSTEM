@@ -17,7 +17,7 @@ const Login = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log("User Info: ", user);
-      navigate('/dashboard/qr-code'); // Navigate to QR Code page after successful login
+      navigate('/dashboard'); // Navigate to QR Code page after successful login
     } catch (error) {
       console.error("Error during sign-in:", error.message);
       setError(error.message); // Display error message if Google Sign-In fails
