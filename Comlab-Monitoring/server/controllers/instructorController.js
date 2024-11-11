@@ -31,8 +31,8 @@ const getInstructor = async (req, res) => {
 const postInstructor = async (req, res) => {
     try {
         // Validate input data (example for required fields)
-        const { name, lastname, email } = req.body;
-        if (!name || !lastname || !email) {
+        const { id, name, lastname, email } = req.body;
+        if (!id, !name || !lastname || !email) {
             return res.status(400).json({ message: "Missing required fields: name, lastname, and email" });
         }
 
@@ -75,7 +75,8 @@ const updateInstructor = async (req, res) => {
         }
 
         // Update instructor details
-        const { name, lastname, email } = req.body;
+        const { id, name, lastname, email } = req.body;
+        instructor.id = id || instructor.id
         instructor.name = name || instructor.name;
         instructor.lastname = lastname || instructor.lastname;
         instructor.email = email || instructor.email;

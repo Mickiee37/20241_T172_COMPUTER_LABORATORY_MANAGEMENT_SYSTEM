@@ -4,13 +4,23 @@ import User from '../models/User.js';
 
 const router = express.Router();
 
+// Helper function for password validation
+const isValidPassword = (password) => {
+  const minLength = 10;
+  const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*_\-])/;  // Including _ and - as special characters
+  return password.length >= minLength && pattern.test(password);
+};
+
 // Register route
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if password is at least 6 characters
-  if (password.length < 6) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+  // Check if password meets criteria
+  if (!isValidPassword(password)) {
+    return res.status(400).json({
+      message:
+        'Password must be at least 10 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*-).',
+    });
   }
 
   try {
@@ -37,7 +47,6 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Server error during registration' });
   }
 });
-
 
 // Check user credentials route
 router.post('/check-user', async (req, res) => {

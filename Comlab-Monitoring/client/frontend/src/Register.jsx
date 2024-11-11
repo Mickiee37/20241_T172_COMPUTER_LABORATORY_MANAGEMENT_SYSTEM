@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Register.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate to handle navigation
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,8 +9,8 @@ const Register = () => {
     confirmPassword: '',
   });
 
-  const [error, setError] = useState(''); // For storing validation error message
-  const navigate = useNavigate(); // Initialize navigate function
+  const [errors, setErrors] = useState({}); // To store specific validation error messages
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -27,17 +27,30 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {};
+
+    // Validate email
     if (!isValidEmail(formData.email)) {
-      setError('Please enter a valid email address ending with @buksu.edu.ph');
-      return;
+      newErrors.email = 'Please enter a valid email address ending with @buksu.edu.ph';
     }
+
+    // Validate password match
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
+      newErrors.confirmPassword = "Passwords don't match!";
+    }
+
+    // Validate password length and complexity
+    if (formData.password.length < 10) {
+      newErrors.password = 'Password must be at least 10 characters long';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors); // Display validation errors
       return;
     }
 
-    // Reset error if email is valid
-    setError('');
+    // Reset errors if form is valid
+    setErrors({});
 
     try {
       const response = await fetch('http://localhost:8000/api/users/register', {
@@ -56,11 +69,11 @@ const Register = () => {
         alert('Registration successful');
         navigate('/login'); 
       } else {
-        alert(data.message);
+        setErrors({ api: data.message }); // Display backend error if any
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error registering user');
+      setErrors({ api: 'Error registering user' });
     }
   };
 
@@ -68,32 +81,44 @@ const Register = () => {
     <div className="register-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-        />
-        {error && <p className="error-message">{error}</p>} {/* Display error message if email is invalid */}
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Confirm Password"
-          required
-        />
+        <div>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+          />
+          {errors.email && <p className="error-message">{errors.email}</p>}
+        </div>
+
+        <div>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+          />
+          {errors.password && <p className="error-message">{errors.password}</p>}
+        </div>
+
+        <div>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirm Password"
+            required
+          />
+          {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
+        </div>
+
         <button type="submit">Register</button>
+        {errors.api && <p className="error-message">{errors.api}</p>} {/* Display API error if backend returns one */}
       </form>
 
       <p className="login-link">

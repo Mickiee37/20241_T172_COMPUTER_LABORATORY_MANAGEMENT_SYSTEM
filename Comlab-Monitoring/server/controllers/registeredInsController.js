@@ -1,91 +1,81 @@
-import mongoose from "mongoose";
-import User from "../models/User.js";
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
 
-// Get all users
-const getUsers = async (req, res) => {
-    try {
-        const users = await User.find();
-        res.send(users);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Failed to retrieve users" });
-    }
+const router = express.Router();
+
+// Helper function for password validation
+const isValidPassword = (password) => {
+  const minLength = 10;
+  const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*-_])/; // Includes _ and -
+  return password.length >= minLength && pattern.test(password);
 };
 
-// Get a specific user by ID
-const getUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.send(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Failed to retrieve user" });
+// Register route
+router.post('/register', async (req, res) => {
+  const { email, password } = req.body;
+
+  console.log('Registration request received with:', req.body); // Log incoming request data
+
+  // Check if password meets criteria
+  if (!isValidPassword(password)) {
+    console.log('Invalid password format'); // Log if password format is invalid
+    return res.status(400).json({
+      message:
+        'Password must be at least 10 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*-_)',
+    });
+  }
+
+  try {
+    // Check if the user already exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      console.log('User already exists'); // Log if user already exists
+      return res.status(400).json({ message: 'User already exists' });
     }
-};
 
-// Register a new user
-const postUser = async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        // Check if the user already exists
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ message: "User already exists" });
-        }
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Password hashed successfully'); // Log successful password hashing
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
+    // Create a new user
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+    });
 
-        // Create a new user
-        const newUser = new User({
-            email,
-            password: hashedPassword,
-        });
+    // Save the user to the database
+    await newUser.save();
+    console.log('User saved successfully'); // Log successful user creation
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({ message: 'Server error during registration' });
+  }
+});
 
-        // Save the user to the database
-        const savedUser = await newUser.save();
-        res.status(201).json(savedUser);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error during registration" });
+// Check user credentials route
+router.post('/check-user', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-};
 
-// Delete a user by ID
-const deleteUser = async (req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.status(200).json({ message: "User deleted successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Failed to delete user" });
+    // Compare the entered password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
-};
 
-// Update a user's information
-const updateUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+    // Send successful response if credentials match
+    res.status(200).json({ message: 'Login successful' });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ message: 'Server error during login' });
+  }
+});
 
-        // Update user details
-        user.email = req.body.email || user.email;
-
-        // Save updated user details
-        const updatedUser = await user.save();
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Failed to update user" });
-    }
-};
-
-export { getUsers, getUser, postUser, deleteUser, updateUser };
+export default router;
