@@ -1,47 +1,81 @@
 /* Dashboard layout */
 .dashboard {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns for labs */
-    gap: 1rem;
-    padding: 2rem;
-    background-color: #d0e0f0;
-    position: relative;
-    padding-top: 80px; /* Added more space at the top for icons */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns for labs */
+  gap: 1rem;
+  padding: 2rem;
+  background-color: #d0e0f0;
+  position: relative;
+  padding-top: 80px; /* Added more space at the top for icons */
+}
+
+/* Wrapper for icons */
+.icon-wrapper {
+  position: absolute;
+  top: 20px; /* Keep it below the top edge */
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px; /* Space between the icons */
+}
+
+/* Style for the Person icon */
+.person-icon {
+  font-size: 32px;
+  color: #000;
+  cursor: pointer;
+}
+
+.person-icon:hover {
+  color: #007bff;
+}
+
+/* Style for the QR Code icon */
+.qr-icon {
+  font-size: 40px;
+  color: #000;
+  cursor: pointer;
+}
+
+.qr-icon:hover {
+  color: #007bff;
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+      grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+      padding: 1rem;
   }
-  
-  /* Wrapper for icons */
+
   .icon-wrapper {
-    position: absolute;
-    top: 20px; /* Keep it below the top edge */
-    right: 20px;
-    z-index: 100;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 15px; /* Space between the icons */
+      top: 10px; /* Adjust the position on smaller screens */
+      right: 10px;
   }
-  
-  /* Style for the Person icon */
-  .person-icon {
-    font-size: 32px;
-    color: #000;
-    cursor: pointer;
-  }
-  
-  .person-icon:hover {
-    color: #007bff;
-  }
-  
-  /* Style for the QR Code icon */
+
+  .person-icon,
   .qr-icon {
-    font-size: 40px;
-    color: #000;
-    cursor: pointer;
+      font-size: 28px; /* Smaller icon size on mobile */
   }
-  
-  .qr-icon:hover {
-    color: #007bff;
-    transform: scale(1.1);
-    transition: transform 0.3s ease;
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+      grid-template-columns: 1fr; /* 1 column layout on mobile */
+      padding: 0.5rem;
   }
-  
+
+  .icon-wrapper {
+      top: 10px; /* Keep the icon position similar */
+      right: 10px;
+  }
+
+  .person-icon,
+  .qr-icon {
+      font-size: 24px; /* Even smaller icon size on very small screens */
+  }
+}

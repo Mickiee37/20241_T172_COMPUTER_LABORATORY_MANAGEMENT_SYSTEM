@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
 import moment from 'moment';
 import axios from 'axios';
-import html2canvas from 'html2canvas'; // Import html2canvas
+import html2canvas from 'html2canvas';
+import './QRCodeGenerator.css';
 
 const QRCodeGenerator = () => {
   const [instructorName, setInstructorName] = useState('');
-  const [qrData, setQrData] = useState(''); // Data for frontend-generated QR code
+  const [qrData, setQrData] = useState('');
   const [loading, setLoading] = useState(false);
-  const [serverData, setServerData] = useState(null); // Data fetched from the server
+  const [serverData, setServerData] = useState(null);
 
-  // Handle QR Code generation
   const fetchServerQRCode = async () => {
     if (!instructorName) {
       alert("Please enter an instructor name!");
@@ -20,7 +20,6 @@ const QRCodeGenerator = () => {
     setLoading(true);
     try {
       const timeIn = moment().format('YYYY-MM-DD HH:mm:ss');
-      // Send request to the backend to generate the QR code
       const response = await axios.get('http://localhost:8000/api/qr-code', {
         params: {
           instructorName,
@@ -46,21 +45,19 @@ const QRCodeGenerator = () => {
     }
   }, [instructorName, serverData]);
 
-  // Handle download of the QR code as an image
   const downloadQRCode = () => {
-    const qrCodeElement = document.getElementById('qr-code'); // Get the QR code element
+    const qrCodeElement = document.getElementById('qr-code');
 
     html2canvas(qrCodeElement).then((canvas) => {
       const link = document.createElement('a');
-      link.href = canvas.toDataURL(); // Get image data
-      link.download = 'qr-code.png'; // Set download filename
-      link.click(); // Trigger the download
+      link.href = canvas.toDataURL();
+      link.download = 'qr-code.png';
+      link.click();
     });
   };
 
   return (
-    <div>
-      <h3>Enter Instructor Name:</h3>
+    <div className="box">
       <input
         type="text"
         value={instructorName}
@@ -80,17 +77,14 @@ const QRCodeGenerator = () => {
             <img src={serverData} alt="Instructor QR Code" />
           </div>
         ) : (
-          <div>
-            <p>QR Code generator</p>
-            <div id="qr-code"> {/* Add an id for capturing the QR code */}
-              <QRCode value={qrData} />
-            </div>
+          <div id="qr-code">
+            <QRCode value={qrData} />
           </div>
         )}
       </div>
 
       <button onClick={fetchServerQRCode} className="btn btn-primary">Fetch Server QR Code</button>
-      <button onClick={downloadQRCode} className="btn btn-success mt-3">Download QR Code</button>
+      <button onClick={downloadQRCode} className="btn btn-success">Download QR Code</button>
     </div>
   );
 };

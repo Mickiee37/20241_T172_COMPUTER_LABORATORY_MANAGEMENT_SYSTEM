@@ -37,7 +37,7 @@ const Login = () => {
 
       if (response.status === 200) {
         // If user exists and credentials are correct, navigate to QR Code page
-        navigate('/dashboard/qr-code');
+        navigate('/dashboard');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed'); // Show error if login fails
