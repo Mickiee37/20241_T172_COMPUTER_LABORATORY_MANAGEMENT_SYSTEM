@@ -80,6 +80,7 @@ const Login = () => {
           {error && <p className="error-message">{error}</p>} {/* Display error message */}
           <button type="submit" className="login-button">Login</button>
         </form>
+        <br></br><br></br>
         <p className="register-link">
           Don't have an account? <a href="/register">Register</a>
         </p>
