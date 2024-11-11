@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Register.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate to handle navigation
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,8 +9,8 @@ const Register = () => {
     confirmPassword: '',
   });
 
-  const [error, setError] = useState(''); // For storing validation error message
-  const navigate = useNavigate(); // Initialize navigate function
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,7 +19,6 @@ const Register = () => {
     });
   };
 
-  // Email validation regex for @buksu.edu.ph
   const isValidEmail = (email) => {
     const regex = /^[a-zA-Z0-9._%+-]+@buksu\.edu\.ph$/;
     return regex.test(email);
@@ -36,7 +35,6 @@ const Register = () => {
       return;
     }
 
-    // Reset error if email is valid
     setError('');
 
     try {
@@ -66,39 +64,47 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-        />
-        {error && <p className="error-message">{error}</p>} {/* Display error message if email is invalid */}
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Confirm Password"
-          required
-        />
-        <button type="submit">Register</button>
-      </form>
-
-      <p className="login-link">
-        Already have an account? <a href="/login">Login</a>
-      </p>
+      <div className="register-image">
+        <img src="BG2.png" alt="Building" />
+      </div>
+      <div className="register-form">
+        <img src="COTLOGO.png" alt="Logo" className="register-logo" />
+        <h1>BUKSU</h1>
+        <p className="com">Computer Laboratory Monitoring System</p>
+        
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+          />
+          {error && <p className="error-message">{error}</p>}
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirm Password"
+            required
+          />
+          <button type="submit" className="register-button">Register</button>
+        </form>
+        
+        <p className="login-link">
+          Already have an account? <a href="/login">Login</a>
+        </p>
+      </div>
     </div>
   );
 };
