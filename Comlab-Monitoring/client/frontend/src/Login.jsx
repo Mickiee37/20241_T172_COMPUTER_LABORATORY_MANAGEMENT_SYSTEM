@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "./firebase";  // Import auth and provider from firebase.js
+import { auth, provider } from "./firebase"; // Import auth and provider from firebase.js
 import { useNavigate } from "react-router-dom"; // For navigation
-import axios from "axios";  // Import axios for making API calls
+import axios from "axios"; // Import axios for making API calls
 import './Login.css';
 
 const Login = () => {
@@ -17,7 +17,7 @@ const Login = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log("User Info: ", user);
-      navigate('/dashboard'); // Navigate to dashboard after successful login
+      navigate('/dashboard'); // Navigate to QR Code page after successful login
     } catch (error) {
       console.error("Error during sign-in:", error.message);
       setError(error.message); // Display error message if Google Sign-In fails
@@ -36,7 +36,7 @@ const Login = () => {
       const response = await axios.post('http://localhost:8000/api/users/check-user', { email, password });
 
       if (response.status === 200) {
-        // If user exists and credentials are correct, navigate to dashboard
+        // If user exists and credentials are correct, navigate to QR Code page
         navigate('/dashboard');
       }
     } catch (err) {
@@ -47,17 +47,18 @@ const Login = () => {
 
   return (
     <div className="login-container">
-        <div className="login-image">
-            <img src="BG2.png" alt="Building" />
+      <div className="login-image">
+        <img src="BG2.png" alt="Building" />
       </div>
       <div className="login-form">
-      <img src="COTLOGO.png" alt="Logo" className="login-logo" /> {/* Add logo here */}
+        <img src="COTLOGO.png" alt="Logo" className="login-logo" /> {/* Add logo here */}
         <h1>BUKSU</h1>
         <p className="com">Computer Laboratory Monitoring System</p>
 
         {/* Google Sign-In Button */}
         <button onClick={handleGoogleSignIn} className="google-login">
-        <img src="google.png" alt="Google icon" className="google-icon" />Continue with Google</button>
+          <img src="google.png" alt="Google icon" className="google-icon" />Continue with Google
+        </button>
 
         <hr />
 

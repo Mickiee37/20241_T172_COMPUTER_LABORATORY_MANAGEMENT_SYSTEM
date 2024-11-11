@@ -7,7 +7,7 @@ const router = express.Router();
 // Helper function for password validation
 const isValidPassword = (password) => {
   const minLength = 10;
-  const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*_\-])/;  // Including _ and - as special characters
+  const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*-_])/; // Includes _ and -
   return password.length >= minLength && pattern.test(password);
 };
 
@@ -15,11 +15,14 @@ const isValidPassword = (password) => {
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
+  console.log('Registration request received with:', req.body); // Log incoming request data
+
   // Check if password meets criteria
   if (!isValidPassword(password)) {
+    console.log('Invalid password format'); // Log if password format is invalid
     return res.status(400).json({
       message:
-        'Password must be at least 10 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*-).',
+        'Password must be at least 10 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*-_)',
     });
   }
 
@@ -27,11 +30,13 @@ router.post('/register', async (req, res) => {
     // Check if the user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
+      console.log('User already exists'); // Log if user already exists
       return res.status(400).json({ message: 'User already exists' });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Password hashed successfully'); // Log successful password hashing
 
     // Create a new user
     const newUser = new User({
@@ -41,6 +46,7 @@ router.post('/register', async (req, res) => {
 
     // Save the user to the database
     await newUser.save();
+    console.log('User saved successfully'); // Log successful user creation
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error('Error during registration:', error);
