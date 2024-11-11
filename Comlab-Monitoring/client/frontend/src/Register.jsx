@@ -9,7 +9,7 @@ const Register = () => {
     confirmPassword: '',
   });
 
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({}); // To store specific validation error messages
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,6 +19,7 @@ const Register = () => {
     });
   };
 
+  // Email validation regex for @buksu.edu.ph
   const isValidEmail = (email) => {
     const regex = /^[a-zA-Z0-9._%+-]+@buksu\.edu\.ph$/;
     return regex.test(email);
@@ -26,16 +27,30 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {};
+
+    // Validate email
     if (!isValidEmail(formData.email)) {
-      setError('Please enter a valid email address ending with @buksu.edu.ph');
-      return;
+      newErrors.email = 'Please enter a valid email address ending with @buksu.edu.ph';
     }
+
+    // Validate password match
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
+      newErrors.confirmPassword = "Passwords don't match!";
+    }
+
+    // Validate password length and complexity
+    if (formData.password.length < 10) {
+      newErrors.password = 'Password must be at least 10 characters long';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors); // Display validation errors
       return;
     }
 
-    setError('');
+    // Reset errors if form is valid
+    setErrors({});
 
     try {
       const response = await fetch('http://localhost:8000/api/users/register', {
@@ -54,11 +69,11 @@ const Register = () => {
         alert('Registration successful');
         navigate('/login'); 
       } else {
-        alert(data.message);
+        setErrors({ api: data.message }); // Display backend error if any
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error registering user');
+      setErrors({ api: 'Error registering user' });
     }
   };
 
@@ -71,8 +86,8 @@ const Register = () => {
         <img src="COTLOGO.png" alt="Logo" className="register-logo" />
         <h1>BUKSU</h1>
         <p className="com">Computer Laboratory Monitoring System</p>
-        
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
+        <div>
           <input
             type="email"
             name="email"
@@ -81,7 +96,10 @@ const Register = () => {
             placeholder="Email"
             required
           />
-          {error && <p className="error-message">{error}</p>}
+          {errors.email && <p className="error-message">{errors.email}</p>}
+        </div>
+
+        <div>
           <input
             type="password"
             name="password"
@@ -90,6 +108,10 @@ const Register = () => {
             placeholder="Password"
             required
           />
+          {errors.password && <p className="error-message">{errors.password}</p>}
+        </div>
+
+        <div>
           <input
             type="password"
             name="confirmPassword"
@@ -98,14 +120,19 @@ const Register = () => {
             placeholder="Confirm Password"
             required
           />
-          <button type="submit" className="register-button">Register</button>
-        </form>
-        
-        <p className="login-link">
-          Already have an account? <a href="/login">Login</a>
-        </p>
-      </div>
+          {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
+        </div>
+
+        <button type="submit" className='register-button'>Register</button>
+        {errors.api && <p className="error-message">{errors.api}</p>} {/* Display API error if backend returns one */}
+      </form>
+
+      <p className="login-link">
+        Already have an account? <a href="/login">Login</a>
+      </p>
     </div>
+    </div>
+
   );
 };
 

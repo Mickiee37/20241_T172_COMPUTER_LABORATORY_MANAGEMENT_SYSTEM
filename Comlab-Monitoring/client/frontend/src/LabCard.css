@@ -1,28 +1,31 @@
-/* LabCard.css */
+/* Lab Card Styles */
 .lab-card {
-    background-color: #e0eaf8;
-    border: 2px solid #87b2e3;
+    border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 1rem;
-    min-height: 100px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: 1rem;
-}
-
-.lab-header {
+    padding: 15px;
+    margin: 10px;
+    background-color: #f9f9f9;
+    min-height: 200px; /* Set a minimum height to ensure proper layout */
+  }
+  
+  .lab-header {
+    font-size: 18px;
     font-weight: bold;
-    color: black;
-}
-
-.user-info {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: #333;
-}
-
-.empty-state {
-    min-height: 50px;
-}
+    margin-bottom: 10px;
+  }
+  
+  .user-info {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .empty-state {
+    font-size: 14px;
+    font-style: italic;
+    color: #777;
+  }
+  
+  .empty-state p {
+    margin: 0;
+  }
+  
