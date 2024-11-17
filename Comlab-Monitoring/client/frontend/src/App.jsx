@@ -63,7 +63,7 @@ const App = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     if (!validateEmail(newInstructorPut.email)) {
-      console.error("Invalid email. '@buksu.buksu.edu.ph' emails are allowed.");
+      console.error("Invalid email. '@buksu.edu.ph' emails are allowed.");
       return;
     }
     try {
@@ -116,7 +116,10 @@ const App = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Instructor Management</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="Instructh1">Instructor Management</h1>
+        <button className="btn btn-sm btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
+      </div>
 
       <table className="table table-striped table-hover table-bordered mb-5">
         <thead className="table-light">
@@ -125,47 +128,40 @@ const App = () => {
             <th>Name</th>
             <th>Last Name</th>
             <th>Email</th>
+            <th className="text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
-  {instructors.length > 0 ? (
-    instructors.map((instructor) => (
-      <tr key={instructor._id}>
-        <td>{instructor._id}</td>
-        <td>{instructor.name}</td>
-        <td>{instructor.lastname}</td>
-        <td>{instructor.email}</td>
-        <td className="text-center"> 
-          <button
-            className="btn btn-warning btn-sm me-2"
-            onClick={() => handleUpdateClick(instructor)}
-          >
-            <i className="fas fa-edit"></i> 
-          </button>
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={() => handleDeleteClick(instructor._id)}
-          >
-            <i className="fas fa-trash-alt"></i> 
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" className="text-center">No instructors fetched</td>
-    </tr>
-  )}
-</tbody>
-
-
-
+          {instructors.length > 0 ? (
+            instructors.map((instructor) => (
+              <tr key={instructor._id}>
+                <td>{instructor._id}</td>
+                <td>{instructor.name}</td>
+                <td>{instructor.lastname}</td>
+                <td>{instructor.email}</td>
+                <td className="text-center"> 
+                  <button
+                    className="btn btn-warning btn-sm me-2"
+                    onClick={() => handleUpdateClick(instructor)}
+                  >
+                    <i className="fas fa-edit"></i> 
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDeleteClick(instructor._id)}
+                  >
+                    <i className="fas fa-trash-alt"></i> 
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center">No instructors fetched</td>
+            </tr>
+          )}
+        </tbody>
       </table>
-
-      <div className="d-flex justify-content-around mb-4">
-        <button className="btn btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
-        
-      </div>
 
       {/* Conditionally Render Forms */}
       {activeForm === 'add' && (
