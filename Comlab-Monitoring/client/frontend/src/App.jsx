@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
+import { IoPersonSharp } from "react-icons/io5";
+import { RiComputerLine } from "react-icons/ri";
+import { FaQrcode } from 'react-icons/fa'; // Import QR code icon from FontAwesome
+import { MdHistory } from "react-icons/md";
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate for navigation
 
 const App = () => {
   const [instructors, setInstructors] = useState([]);
@@ -9,6 +14,11 @@ const App = () => {
   const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', email: '' });
   const [deleteId, setDeleteId] = useState('');
   const [activeForm, setActiveForm] = useState(null);
+  const navigate = useNavigate(); // React Router's useNavigate for redirection
+  const handleLogout = () => {
+    // Redirect to the usertype selection menu
+    navigate('/');
+  };
 
   useEffect(() => {
     fetchInstructors();
@@ -112,10 +122,42 @@ const App = () => {
     setActiveForm('delete');
     setDeleteId(id);
   };
+
   
 
   return (
     <div className="container mt-5">
+         <nav className="navbar fixed-top navbar-expand-lg bg-black">
+   <div className="container">
+     {/* Left: Brand */}
+     <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
+     {/* Center: Icons and Labels */}
+     <div className="navbar-center">
+     <Link to="/Dashboard" className="navbar-item">
+   <RiComputerLine className="icon computer-icon" />
+   <span className="icon-label">Computer Lab</span>
+ </Link>
+       <Link to="/app" className="navbar-item">
+         <IoPersonSharp className="icon person-icon" />
+         <span className="icon-label">Instructor Menu</span>
+       </Link>
+       <Link to="/qr-code" className="navbar-item">
+         <FaQrcode className="icon qr-icon" />
+         <span className="icon-label">QR Generator</span>
+       </Link>
+       <Link to="/qr-code" className="navbar-item">
+        <MdHistory className="icon history-icon" />
+        <span className="icon-label">History Log</span>
+      </Link>
+     </div>
+     {/* Right: Logout Button */}
+     <button className="logout-button" onClick={handleLogout}>
+       Logout
+     </button>
+   </div>
+ </nav>
+    <br></br>
+    <br></br>
       <h1 className="text-center mb-4">Instructor Management</h1>
 
       <table className="table table-striped table-hover table-bordered mb-5">
@@ -157,8 +199,6 @@ const App = () => {
     </tr>
   )}
 </tbody>
-
-
 
       </table>
 

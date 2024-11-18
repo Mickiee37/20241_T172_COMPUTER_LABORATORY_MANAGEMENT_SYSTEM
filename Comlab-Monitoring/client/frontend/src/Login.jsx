@@ -8,6 +8,7 @@ import './Login.css';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const navigate = useNavigate();
   const [error, setError] = useState(''); // For storing error messages
 
@@ -51,18 +52,16 @@ const Login = () => {
         <img src="BG2.png" alt="Building" />
       </div>
       <div className="login-form">
-        <img src="COTLOGO.png" alt="Logo" className="login-logo" /> {/* Add logo here */}
+        <img src="COTLOGO.png" alt="Logo" className="login-logo" />
         <h1>BUKSU</h1>
         <p className="com">Computer Laboratory Monitoring System</p>
 
-        {/* Google Sign-In Button */}
         <button onClick={handleGoogleSignIn} className="google-login">
           <img src="google.png" alt="Google icon" className="google-icon" />Continue with Google
         </button>
 
         <hr />
 
-        {/* Email/Password Login Form */}
         <form onSubmit={handleLogin}>
           <input
             type="email"
@@ -72,16 +71,26 @@ const Login = () => {
             required
           />
           <input
-            type="password"
+            type={showPassword ? "text" : "password"} // Toggle between text and password
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          {error && <p className="error-message">{error}</p>} {/* Display error message */}
+          <div className="show-password">
+            <input 
+              type="checkbox" 
+              id="showPassword" 
+              checked={showPassword} 
+              onChange={() => setShowPassword(!showPassword)} 
+            />
+            <label htmlFor="showPassword">Show Password</label>
+          </div>
+
+          {error && <p className="error-message">{error}</p>}
           <button type="submit" className="login-button">Login</button>
         </form>
-        <br></br><br></br>
+        <br /><br />
         <p className="register-link">
           Don't have an account? <a href="/register">Register</a>
         </p>
