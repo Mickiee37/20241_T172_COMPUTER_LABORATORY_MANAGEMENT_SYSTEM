@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
+import DataTable from 'react-data-table-component';
 
 const App = () => {
   const [instructors, setInstructors] = useState([]);
@@ -9,6 +10,7 @@ const App = () => {
   const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', email: '' });
   const [deleteId, setDeleteId] = useState('');
   const [activeForm, setActiveForm] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchInstructors();
@@ -74,7 +76,7 @@ const App = () => {
       });
       if (!response.ok) throw new Error('Failed to update instructor');
       await fetchInstructors();
-      setNewInstructorPut({ id: '', name: '', lastname: '',email: '' });
+      setNewInstructorPut({ id: '', name: '', lastname: '', email: '' });
     } catch (error) {
       console.error('Error updating instructor', error);
     }
@@ -101,7 +103,7 @@ const App = () => {
   const handleUpdateClick = (instructor) => {
     setActiveForm('update');
     setNewInstructorPut({
-      id: instructor._id,
+      id: instructor.id,
       name: instructor.name,
       lastname: instructor.lastname,
       email: instructor.email,
@@ -112,62 +114,90 @@ const App = () => {
     setActiveForm('delete');
     setDeleteId(id);
   };
-  
 
-  return (
-    <div className="container mt-5">
-      <h1 className="text-center mb-4">Instructor Management</h1>
-
-      <table className="table table-striped table-hover table-bordered mb-5">
-        <thead className="table-light">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-  {instructors.length > 0 ? (
-    instructors.map((instructor) => (
-      <tr key={instructor._id}>
-        <td>{instructor._id}</td>
-        <td>{instructor.name}</td>
-        <td>{instructor.lastname}</td>
-        <td>{instructor.email}</td>
-        <td className="text-center"> 
+  const columns = [
+    {
+      name: 'ID',
+      selector: row => row.id,
+      sortable: true,
+    },
+    {
+      name: 'Name',
+      selector: row => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Last Name',
+      selector: row => row.lastname,
+      sortable: true,
+    },
+    {
+      name: 'Email',
+      selector: row => row.email,
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: (row) => (
+        <div className="text-center">
           <button
             className="btn btn-warning btn-sm me-2"
-            onClick={() => handleUpdateClick(instructor)}
+            onClick={() => handleUpdateClick(row)}
           >
             <i className="fas fa-edit"></i> 
           </button>
           <button
             className="btn btn-danger btn-sm"
-            onClick={() => handleDeleteClick(instructor._id)}
+            onClick={() => handleDeleteClick(row.id)}
           >
             <i className="fas fa-trash-alt"></i> 
           </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" className="text-center">No instructors fetched</td>
-    </tr>
-  )}
-</tbody>
+        </div>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
 
+  const filteredInstructors = instructors.filter((instructor) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      instructor.id.toString().toLowerCase().includes(search) ||
+      instructor.name.toLowerCase().includes(search) ||
+      instructor.lastname.toLowerCase().includes(search) ||
+      instructor.email.toLowerCase().includes(search)
+    );
+  });
 
+  return (
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Instructor Management</h1>
 
-      </table>
-
-      <div className="d-flex justify-content-around mb-4">
-        <button className="btn btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
-        
+      <div className="mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by ID, Name, Last Name, or Email"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
-      {/* Conditionally Render Forms */}
+      <button className="btn btn-primary add-instructor-btn" onClick={() => setActiveForm('add')}>Add Instructor</button>
+
+      <div className="table-container">
+        <DataTable
+          title="Instructors"
+          columns={columns}
+          data={filteredInstructors}
+          pagination
+          striped
+          highlightOnHover
+          responsive
+        />
+      </div>
+
       {activeForm === 'add' && (
         <div className="mb-4">
           <h3>Add Instructor</h3>

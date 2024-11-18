@@ -1,33 +1,49 @@
+/* General Body Styles */
 body {
     background-color: #F9F9F9;
+    font-family: 'Arial', sans-serif;
+    color: #333;
 }
+
+/* Background Container with Image */
 .background-container {
-    background-image: url('/Comlab-Monitoring/client/frontend/public/BG2.png'); 
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat; 
-    border-radius: 15px; 
+    background-image: url('/Comlab-Monitoring/client/frontend/public/BG2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
-    padding: 20px;
-
+    padding: 30px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
+/* Header Text */
 .header-text {
     color: #545455;
     font-weight: bold;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
+/* Table Styles */
 .table {
-    border-radius: 0.5rem;
+    width: 100%;
+    border-radius: 10px;
     overflow: hidden;
     margin-bottom: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .table-header {
     background-color: #2980B9;
     color: #FFFFFF;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
@@ -36,19 +52,25 @@ body {
 
 .table-striped tbody tr:hover {
     background-color: #A4D1E3;
+    transition: background-color 0.3s ease;
 }
 
+/* Form Header */
 .form-header {
     color: #2980B9;
-    margin-bottom: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
+/* Button Styles */
 .btn {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
     padding: 10px 20px;
     border-radius: 30px;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
@@ -61,20 +83,17 @@ body {
     background: linear-gradient(45deg, #F39C12, #E67E22);
     border: none;
     color: white;
-    
-    width: 30%;
 }
 
 .btn-danger {
     background: linear-gradient(45deg, #E74C3C, #C0392B);
     border: none;
     color: white;
-    
-    width: 30%;
 }
 
 .btn:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:hover {
@@ -87,12 +106,74 @@ body {
 
 .btn-danger:hover {
     background: linear-gradient(45deg, #C0392B, #E74C3C);
-    color: red;
 }
 
-
+/* Table Actions Button Styles */
 .table .text-center {
     display: flex;
     justify-content: center;
-    gap: 0.5rem; 
+    gap: 1rem;
+}
+
+/* Input Form Styling */
+input[type="text"], input[type="email"], input[type="number"] {
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus {
+    border-color: #2980B9;
+    outline: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .background-container {
+        padding: 20px;
+    }
+
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 1rem;
+    }
+
+    .header-text {
+        font-size: 1.5rem;
+    }
+
+    .form-header {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .background-container {
+        padding: 15px;
+    }
+
+    .table {
+        font-size: 0.8rem;
+    }
+
+    .btn {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
+
+    .header-text {
+        font-size: 1.3rem;
+    }
+
+    .form-header {
+        font-size: 1.2rem;
+    }
 }

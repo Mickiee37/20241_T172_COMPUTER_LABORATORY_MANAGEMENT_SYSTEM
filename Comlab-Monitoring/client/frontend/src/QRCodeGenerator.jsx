@@ -1,53 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import QRCode from 'react-qr-code';
 import moment from 'moment';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
+import ConfirmAttendance from './ConfirmAttendance';
 import './QRCodeGenerator.css';
 
 const QRCodeGenerator = () => {
   const [instructorName, setInstructorName] = useState('');
   const [qrData, setQrData] = useState('');
   const [loading, setLoading] = useState(false);
-  const [serverData, setServerData] = useState(null);
+  const [attendanceLog, setAttendanceLog] = useState(null);
 
-  const fetchServerQRCode = async () => {
+  const serverBaseUrl = 'http://localhost:8000/api/qr-code';
+
+  const generateQRCodeAndLogAttendance = async () => {
     if (!instructorName) {
       alert("Please enter an instructor name!");
       return;
     }
 
     setLoading(true);
-    try {
-      const timeIn = moment().format('YYYY-MM-DD HH:mm:ss');
-      const response = await axios.get('http://localhost:8000/api/qr-code', {
-        params: {
-          instructorName,
-          timeIn,
-        },
-      });
+    const timeIn = moment().format('YYYY-MM-DD HH:mm:ss');
+    const qrCodeData = { name: instructorName, timeIn, date: moment().format('YYYY-MM-DD') };
 
-      if (response.data.qrCodeUrl) {
-        setServerData(response.data.qrCodeUrl);
-      }
+    setQrData(JSON.stringify(qrCodeData));
+    try {
+      const response = await axios.post(`${serverBaseUrl}/attendance`, {
+        instructorName,
+        timeIn,
+      });
+      
+      // Update attendanceLog state with the response data for confirmation
+      setAttendanceLog({ instructorName, timeIn });
+
+      alert('Attendance logged successfully!');
     } catch (error) {
-      console.error('Error fetching QR code from server:', error);
-      alert("Error fetching QR code from server.");
+      console.error('Error logging attendance:', error);
+      alert('Failed to log attendance. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (!serverData && instructorName) {
-      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-      setQrData(JSON.stringify({ name: instructorName, timeIn: currentTime }));
-    }
-  }, [instructorName, serverData]);
-
   const downloadQRCode = () => {
     const qrCodeElement = document.getElementById('qr-code');
-
     html2canvas(qrCodeElement).then((canvas) => {
       const link = document.createElement('a');
       link.href = canvas.toDataURL();
@@ -65,26 +62,17 @@ const QRCodeGenerator = () => {
         placeholder="Enter Instructor Name"
         className="form-control"
       />
-
       <p>Time In: {moment().format('YYYY-MM-DD HH:mm:ss')}</p>
-
-      <div>
-        {loading ? (
-          <p>Loading QR code...</p>
-        ) : serverData ? (
-          <div>
-            <p>QR Code fetched from Server</p>
-            <img src={serverData} alt="Instructor QR Code" />
-          </div>
-        ) : (
-          <div id="qr-code">
-            <QRCode value={qrData} />
-          </div>
-        )}
+      <div id="qr-code">
+        <QRCode value={qrData} />
       </div>
-
-      <button onClick={fetchServerQRCode} className="btn btn-primary">Fetch Server QR Code</button>
+      <button onClick={generateQRCodeAndLogAttendance} className="btn btn-primary">
+        Generate QR Code and Log Attendance
+      </button>
       <button onClick={downloadQRCode} className="btn btn-success">Download QR Code</button>
+
+      {/* Render attendance confirmation */}
+      <ConfirmAttendance attendanceLog={attendanceLog} />
     </div>
   );
 };

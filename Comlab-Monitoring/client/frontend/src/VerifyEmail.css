@@ -1,0 +1,36 @@
+/* Container Styles */
+.verify-email-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+/* Message Styles */
+.verify-email-message {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Success Message */
+.verify-email-success {
+    color: green;
+}
+
+/* Error Message */
+.verify-email-error {
+    color: red;
+}
+
+/* Button Styles */
+.verify-email-button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.verify-email-button:hover {
+    background-color: #45a049;
+}

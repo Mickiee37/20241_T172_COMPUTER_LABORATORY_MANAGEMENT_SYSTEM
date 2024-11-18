@@ -1,47 +1,50 @@
 import React, { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "./firebase"; // Import auth and provider from firebase.js
-import { useNavigate } from "react-router-dom"; // For navigation
-import axios from "axios"; // Import axios for making API calls
+import { auth, provider } from "./firebase";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [error, setError] = useState(''); // For storing error messages
 
   // Google Sign-In Handler
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log("User Info: ", user);
-      navigate('/dashboard'); // Navigate to QR Code page after successful login
+      const token = await user.getIdToken();
+
+      // Send the token to the backend to verify
+      const response = await axios.post('http://localhost:8000/api/users/google-login', { token });
+
+      if (response.status === 200) {
+        navigate('/dashboard', { state: { message: 'Login successful!' } });
+      }
     } catch (error) {
       console.error("Error during sign-in:", error.message);
-      setError(error.message); // Display error message if Google Sign-In fails
+      setError(error.message);
     }
   };
 
   // Email/Password Login Handler
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent form submission
-
-    console.log('Email:', email);
-    console.log('Password:', password);
-
+    e.preventDefault();
+    setError(''); // Clear previous error messages
     try {
-      // Send a POST request to check if the user exists in your backend
       const response = await axios.post('http://localhost:8000/api/users/check-user', { email, password });
 
       if (response.status === 200) {
-        // If user exists and credentials are correct, navigate to QR Code page
-        navigate('/dashboard');
+        navigate('/dashboard', { state: { message: 'Login successful!' } });
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed'); // Show error if login fails
-      console.error('Login error:', err);
+      const errorMessage = err.response?.status === 403
+        ? 'Your account is not verified. Please check your email to verify your account.'
+        : err.response?.data?.message || 'Login failed';
+      setError(errorMessage);
     }
   };
 
@@ -51,18 +54,16 @@ const Login = () => {
         <img src="BG2.png" alt="Building" />
       </div>
       <div className="login-form">
-        <img src="COTLOGO.png" alt="Logo" className="login-logo" /> {/* Add logo here */}
+        <img src="COTLOGO.png" alt="Logo" className="login-logo" />
         <h1>BUKSU</h1>
         <p className="com">Computer Laboratory Monitoring System</p>
 
-        {/* Google Sign-In Button */}
         <button onClick={handleGoogleSignIn} className="google-login">
           <img src="google.png" alt="Google icon" className="google-icon" />Continue with Google
         </button>
 
         <hr />
 
-        {/* Email/Password Login Form */}
         <form onSubmit={handleLogin}>
           <input
             type="email"
@@ -78,12 +79,12 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          {error && <p className="error-message">{error}</p>} {/* Display error message */}
-          <button type="submit" className="login-button">Login</button>
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit">Login</button>
         </form>
-        <br></br><br></br>
+
         <p className="register-link">
-          Don't have an account? <a href="/register">Register</a>
+          Don't have an account? <Link to="/register">Register here</Link>
         </p>
       </div>
     </div>

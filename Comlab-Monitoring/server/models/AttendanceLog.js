@@ -17,7 +17,7 @@ const attendanceLogSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Will add createdAt and updatedAt automatically
+    timestamps: true, // Automatically adds createdAt and updatedAt
   }
 );
 
