@@ -1,81 +1,115 @@
-/* Dashboard layout */
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns for labs */
-  gap: 1rem;
-  padding: 2rem;
-  background-color: #d0e0f0;
-  position: relative;
-  padding-top: 80px; /* Added more space at the top for icons */
-}
-
-/* Wrapper for icons */
-.icon-wrapper {
-  position: absolute;
-  top: 20px; /* Keep it below the top edge */
-  right: 20px;
-  z-index: 100;
+/* Navbar container styles */
+.navbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  gap: 15px; /* Space between the icons */
+  padding: 10px 20px;
+  background-color: black;
 }
 
-/* Style for the Person icon */
-.person-icon {
-  font-size: 32px;
-  color: #000;
+/* Navbar brand styles */
+.navbar-brand {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Lucida Sans', sans-serif;
+  position: relative;
+  right: 4.7%;
+}
+
+/* Center icons */
+.navbar-center {
+  display: flex;
+  gap: 20px; /* Space between icons */
+}
+
+/* Icons and labels */
+.navbar-item {
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* Remove underline */
+  color: white;
+  font-size: 14px;
+}
+
+.navbar-item:hover {
+  color: #00bfff; /* Light blue hover effect */
+}
+
+.icon {
+  font-size: 20px; /* Adjusted icon size */
+  color: white;
+  margin-right: 5px;
+}
+
+.icon:hover {
+  color: #00bfff; /* Hover effect */
+}
+
+/* Logout button styles */
+.logout-button {
+  color: white;
+  background-color: #ff4c4c; /* Red background */
+  border: none;
+  padding: 5px 15px; /* Adjusted size */
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+ position: relative;
+ left: 4.5%;
+  width: 7%;
 }
 
-.person-icon:hover {
-  color: #007bff;
+.logout-button:hover {
+  background-color: #ff1f1f; /* Darker red hover effect */
 }
 
-/* Style for the QR Code icon */
-.qr-icon {
-  font-size: 40px;
-  color: #000;
-  cursor: pointer;
+
+
+/* Lab Cards grid layout */
+.lab-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  gap: 20px; /* Space between cards */
+  padding: 2rem;
+  margin-top: 50px; /* Space for navbar */
+  background-color: #d0e0f0;
 }
 
-.qr-icon:hover {
-  color: #007bff;
-  transform: scale(1.1);
-  transition: transform 0.3s ease;
-}
-
-/* Responsive Design */
+/* Lab Cards responsive layout */
 @media (max-width: 768px) {
-  .dashboard {
-      grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
-      padding: 1rem;
+  .lab-cards {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+    padding: 1rem;
   }
 
-  .icon-wrapper {
-      top: 10px; /* Adjust the position on smaller screens */
-      right: 10px;
+  .navbar-center {
+    gap: 20px; /* Reduce gap on smaller screens */
   }
 
-  .person-icon,
-  .qr-icon {
-      font-size: 28px; /* Smaller icon size on mobile */
+  .icon {
+    font-size: 18px; /* Adjust icon size for smaller screens */
+  }
+
+  .logout-button {
+    font-size: 12px; /* Smaller logout button */
+    padding: 6px 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .dashboard {
-      grid-template-columns: 1fr; /* 1 column layout on mobile */
-      padding: 0.5rem;
+  .lab-cards {
+    grid-template-columns: 1fr; /* 1 column layout on mobile */
+    padding: 0.5rem;
   }
 
-  .icon-wrapper {
-      top: 10px; /* Keep the icon position similar */
-      right: 10px;
+  .icon {
+    font-size: 16px; /* Smaller icon size on very small screens */
   }
 
-  .person-icon,
-  .qr-icon {
-      font-size: 24px; /* Even smaller icon size on very small screens */
+  .logout-button {
+    font-size: 10px;
+    padding: 4px 10px;
   }
 }

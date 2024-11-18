@@ -10,7 +10,6 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     padding: 20px;
-
 }
 
 .header-text {
@@ -96,3 +95,100 @@ body {
     justify-content: center;
     gap: 0.5rem; 
 }
+
+/* Navbar container styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: black;
+  }
+  
+  /* Navbar brand styles */
+  .navbar-brand {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Lucida Sans', sans-serif;
+    position: relative;
+    right: 5.8%;
+  }
+  
+  /* Center icons */
+  .navbar-center {
+    display: flex;
+    gap: 20px; /* Space between icons */
+  }
+  
+  /* Icons and labels */
+  .navbar-item {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Remove underline */
+    color: white;
+    font-size: 14px;
+  }
+  
+  .navbar-item:hover {
+    color: #00bfff; /* Light blue hover effect */
+  }
+  
+  .icon {
+    font-size: 20px; /* Adjusted icon size */
+    color: white;
+    margin-right: 5px;
+  }
+  
+  .icon:hover {
+    color: #00bfff; /* Hover effect */
+  }
+  
+  /* Logout button styles */
+  .logout-button {
+    color: white;
+    background-color: #ff4c4c; /* Red background */
+    border: none;
+    padding: 5px 15px; /* Adjusted size */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+   position: relative;
+   left: 4.5%;
+    width: 7%;
+  }
+  
+  .logout-button:hover {
+    background-color: #ff1f1f; /* Darker red hover effect */
+  }
+  
+  
+  
+  /* Lab Cards responsive layout */
+  @media (max-width: 768px) {
+    .navbar-center {
+      gap: 20px; /* Reduce gap on smaller screens */
+    }
+  
+    .icon {
+      font-size: 18px; /* Adjust icon size for smaller screens */
+    }
+  
+    .logout-button {
+      font-size: 12px; /* Smaller logout button */
+      padding: 6px 12px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .icon {
+      font-size: 16px; /* Smaller icon size on very small screens */
+    }
+  
+    .logout-button {
+      font-size: 10px;
+      padding: 4px 10px;
+    }
+  }
+  
