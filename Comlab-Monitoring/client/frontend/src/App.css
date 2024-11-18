@@ -1,6 +1,35 @@
 body {
     background-color: #F9F9F9;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: #333;
+    position: relative;
+  }
+  
+.Instructh1{
+    position: relative;
+    left: 32%;
 }
+  
+  .table th, .table td {
+    vertical-align: middle;
+  }
+  
+  .table .text-center {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .container .d-flex .btn-primary {
+    font-size: 1rem;
+    position: relative;
+    right: 2.5%;
+    width: 15%;
+  }
+  
+
 .background-container {
     background-image: url('/Comlab-Monitoring/client/frontend/public/BG2.png'); 
     background-size: cover; 

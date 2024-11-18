@@ -198,8 +198,7 @@ const App = () => {
       <td colSpan="5" className="text-center">No instructors fetched</td>
     </tr>
   )}
-</tbody>
-
+        </tbody>
       </table>
 
       <div className="d-flex justify-content-around mb-4">
