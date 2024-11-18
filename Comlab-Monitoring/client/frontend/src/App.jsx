@@ -158,8 +158,10 @@ const App = () => {
  </nav>
     <br></br>
     <br></br>
-      <h1 className="text-center mb-4">Instructor Management</h1>
-
+    <div className="d-flex justify-content-between align-items-center mb-4">
+      <h1 className="Instructh1">Instructor Management</h1>
+      <button className="btn btn-sm btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
+      </div>
       <table className="table table-striped table-hover table-bordered mb-5">
         <thead className="table-light">
           <tr>
@@ -200,11 +202,6 @@ const App = () => {
   )}
         </tbody>
       </table>
-
-      <div className="d-flex justify-content-around mb-4">
-        <button className="btn btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
-        
-      </div>
 
       {/* Conditionally Render Forms */}
       {activeForm === 'add' && (
