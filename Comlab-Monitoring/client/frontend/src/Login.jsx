@@ -17,11 +17,11 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log("User Info: ", user);
-      navigate('/dashboard'); // Navigate to QR Code page after successful login
+      console.log("User  Info: ", user);
+      navigate('/dashboard'); // Navigate to the dashboard after successful login
     } catch (error) {
-      console.error("Error during sign-in:", error.message);
-      setError(error.message); // Display error message if Google Sign-In fails
+      console.error("Error during Google sign-in:", error.message);
+      setError("Google Sign-In failed. Please try again."); // Display a user-friendly error message
     }
   };
 
@@ -37,7 +37,7 @@ const Login = () => {
       const response = await axios.post('http://localhost:8000/api/users/check-user', { email, password });
 
       if (response.status === 200) {
-        // If user exists and credentials are correct, navigate to QR Code page
+        // If user exists and credentials are correct, navigate to dashboard
         navigate('/dashboard');
       }
     } catch (err) {
@@ -87,7 +87,7 @@ const Login = () => {
             <label htmlFor="showPassword">Show Password</label>
           </div>
 
-          {error && <p className="error-message">{error}</p>}
+          {error && <p className="error-message">{error}</p>} {/* Display error message */}
           <button type="submit" className="login-button">Login</button>
         </form>
         <br /><br />

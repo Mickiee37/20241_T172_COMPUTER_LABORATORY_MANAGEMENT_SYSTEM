@@ -9,17 +9,19 @@ import Register from './Register';
 import Dashboard from './Dashboard.jsx';
 import App from './App.jsx';
 import QRCodeGenerator from './QRCodeGenerator';
+import VerifyEmail from './VerifyEmail';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<UserType />} /> {/* Set UserType as the default route */}
+        <Route path="/" element={<UserType />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/qr-code" element={<QRCodeGenerator />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/app" element={<App />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
       </Routes>
     </Router>
   </StrictMode>

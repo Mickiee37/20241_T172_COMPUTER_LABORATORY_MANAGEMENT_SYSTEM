@@ -111,7 +111,7 @@ const App = () => {
   const handleUpdateClick = (instructor) => {
     setActiveForm('update');
     setNewInstructorPut({
-      id: instructor._id,
+      id: instructor.id,
       name: instructor.name,
       lastname: instructor.lastname,
       email: instructor.email,
@@ -174,8 +174,8 @@ const App = () => {
         <tbody>
   {instructors.length > 0 ? (
     instructors.map((instructor) => (
-      <tr key={instructor._id}>
-        <td>{instructor._id}</td>
+      <tr key={instructor.id}>
+        <td>{instructor.id}</td>
         <td>{instructor.name}</td>
         <td>{instructor.lastname}</td>
         <td>{instructor.email}</td>
@@ -188,7 +188,7 @@ const App = () => {
           </button>
           <button
             className="btn btn-danger btn-sm"
-            onClick={() => handleDeleteClick(instructor._id)}
+            onClick={() => handleDeleteClick(instructor.id)}
           >
             <i className="fas fa-trash-alt"></i> 
           </button>
