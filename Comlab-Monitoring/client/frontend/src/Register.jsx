@@ -9,7 +9,10 @@ const Register = () => {
     confirmPassword: '',
   });
 
-  const [errors, setErrors] = useState({}); // To store specific validation error messages
+  const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,10 +22,14 @@ const Register = () => {
     });
   };
 
-  // Email validation regex for @buksu.edu.ph
   const isValidEmail = (email) => {
-    const regex = /^[a-zA-Z0-9._%+-]+@buksu\.edu\.ph$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@student\.buksu\.edu\.ph$/;
     return regex.test(email);
+  };
+
+  const isValidPassword = (password) => {
+    const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*-_])/;
+    return pattern.test(password);
   };
 
   const handleSubmit = async (e) => {
@@ -44,8 +51,12 @@ const Register = () => {
       newErrors.password = 'Password must be at least 10 characters long';
     }
 
+    if (!isValidPassword(formData.password)) {
+      newErrors.password = 'Password must contain at least one uppercase letter, one number, and one special character.';
+    }
+
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors); // Display validation errors
+      setErrors(newErrors);
       return;
     }
 
@@ -66,15 +77,29 @@ const Register = () => {
 
       const data = await response.json();
       if (response.ok) {
-        alert('Registration successful');
-        navigate('/login'); 
+        setMessage('Registration successful! Please check your email to verify your account.');
+
+        // Generate the verification link (frontend route)
+        const verificationLink = `http://localhost:3000/verify-email?token=${data.token}`;
+        console.log('Verification link:', verificationLink);
+
+        // Redirect to login page after successful registration
+        navigate('/login');
       } else {
-        setErrors({ api: data.message }); // Display backend error if any
+        setErrors({ api: data.message });
       }
     } catch (error) {
       console.error('Error:', error);
-      setErrors({ api: 'Error registering user' });
+      setErrors({ api: 'Error registering user. Please try again later.' });
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
   };
 
   return (
@@ -86,53 +111,59 @@ const Register = () => {
         <img src="COTLOGO.png" alt="Logo" className="register-logo" />
         <h1>BUKSU</h1>
         <p className="com">Computer Laboratory Monitoring System</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            required
-          />
-          {errors.email && <p className="error-message">{errors.email}</p>}
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              required
+            />
+            {errors.email && <p className="error-message">{errors.email}</p>}
+          </div>
 
-        <div>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-          />
-          {errors.password && <p className="error-message">{errors.password}</p>}
-        </div>
+          <div>
+            <input
+              type={passwordVisible ? 'text' : 'password'}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+            />
+            <button type="button" onClick={togglePasswordVisibility}>
+              {passwordVisible ? 'Hide' : 'Show'}
+            </button>
+            {errors.password && <p className="error-message">{errors.password}</p>}
+          </div>
 
-        <div>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="Confirm Password"
-            required
-          />
-          {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
-        </div>
+          <div>
+            <input
+              type={confirmPasswordVisible ? 'text' : 'password'}
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm Password"
+              required
+            />
+            <button type="button" onClick={toggleConfirmPasswordVisibility}>
+              {confirmPasswordVisible ? 'Hide' : 'Show'}
+            </button>
+            {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
+          </div>
 
-        <button type="submit" className='register-button'>Register</button>
-        {errors.api && <p className="error-message">{errors.api}</p>} {/* Display API error if backend returns one */}
-      </form>
+          <button type="submit" className="register-button">Register</button>
+          {message && <p className="success-message">{message}</p>}
+          {errors.api && <p className="error-message">{errors.api}</p>}
+        </form>
 
-      <p className="login-link">
-        Already have an account? <a href="/login">Login</a>
-      </p>
+        <p className="login-link">
+          Already have an account? <a href="/login">Login</a>
+        </p>
+      </div>
     </div>
-    </div>
-
   );
 };
 
