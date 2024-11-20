@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
+import { IoPersonSharp } from "react-icons/io5";
+import { RiComputerLine } from "react-icons/ri";
+import { FaQrcode } from 'react-icons/fa'; // Import QR code icon from FontAwesome
+import { MdHistory } from "react-icons/md";
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate for navigation
 
 const App = () => {
   const [instructors, setInstructors] = useState([]);
@@ -9,7 +14,13 @@ const App = () => {
   const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', email: '' });
   const [deleteId, setDeleteId] = useState('');
   const [activeForm, setActiveForm] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const navigate = useNavigate(); // React Router's useNavigate for redirection
+  const handleLogout = () => {
+    // Redirect to the usertype selection menu
+    navigate('/');
+  };
 
   useEffect(() => {
     fetchInstructors();
@@ -113,100 +124,153 @@ const App = () => {
     setActiveForm('delete');
     setDeleteId(id);
   };
-  
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter instructors based on search query
+  const filteredInstructors = instructors.filter(instructor =>
+    instructor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    instructor.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    instructor.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Instructor Management</h1>
-
-      <table className="table table-striped table-hover table-bordered mb-5">
-        <thead className="table-light">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-  {instructors.length > 0 ? (
-    instructors.map((instructor) => (
-      <tr key={instructor.id}>
-        <td>{instructor.id}</td>
-        <td>{instructor.name}</td>
-        <td>{instructor.lastname}</td>
-        <td>{instructor.email}</td>
-        <td className="text-center"> 
-          <button
-            className="btn btn-warning btn-sm me-2"
-            onClick={() => handleUpdateClick(instructor)}
-          >
-            <i className="fas fa-edit"></i> 
+      <nav className="navbar fixed-top navbar-expand-lg bg-black">
+        <div className="container">
+          {/* Left: Brand */}
+          <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
+          {/* Center: Icons and Labels */}
+          <div className="navbar-center">
+            <Link to="/Dashboard" className="navbar-item">
+              <RiComputerLine className="icon computer-icon" />
+              <span className="icon-label">Computer Lab</span>
+            </Link>
+            <Link to="/app" className="navbar-item">
+              <IoPersonSharp className="icon person-icon" />
+              <span className="icon-label">Instructor Menu</span>
+            </Link>
+            <Link to="/qr-code" className="navbar-item">
+              <FaQrcode className="icon qr-icon" />
+              <span className="icon-label">QR Generator</span>
+            </Link>
+            <Link to="/qr-code" className="navbar-item">
+              <MdHistory className="icon history-icon" />
+              <span className="icon-label">History Log</span>
+            </Link>
+          </div>
+          {/* Right: Logout Button */}
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
           </button>
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={() => handleDeleteClick(instructor.id)}
-          >
-            <i className="fas fa-trash-alt"></i> 
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" className="text-center">No instructors fetched</td>
-    </tr>
-  )}
-</tbody>
-
-
-
-      </table>
-
-      <div className="d-flex justify-content-around mb-4">
-        <button className="btn btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
-        
+        </div>
+      </nav>
+      <br></br>
+      <br></br>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="Instructh1">Instructor Management</h1>
+        <button className="btn btn-sm btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
+      </div>
+      <div className="mb-4">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by name, last name, or email"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </div>
+      <div className="table-wrapper">
+        <table className="table table-striped table-hover table-bordered mb-5">
+          <thead className="table-light">
+            <tr>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredInstructors.length > 0 ? (
+              filteredInstructors.map((instructor) => (
+                <tr key={instructor.id}>
+                  <td>{instructor.id}</td>
+                  <td>{instructor.name}</td>
+                  <td>{instructor.lastname}</td>
+                  <td>{instructor.email}</td>
+                  <td className="text-center"> 
+                    <button
+                      className="btn btn-warning btn-sm me-2"
+                      onClick={() => handleUpdateClick(instructor)}
+                    >
+                      <i className="fas fa-edit"></i> 
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDeleteClick(instructor.id)}
+                    >
+                      <i className="fas fa-trash-alt"></i> 
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-center">No instructors found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {activeForm === 'add' && (
-        <div className="mb-4">
-          <h3>Add Instructor</h3>
-          <form onSubmit={handleAddInstructor}>
-            <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructor.id} onChange={handleInputChange} />
-            <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructor.name} onChange={handleInputChange} required />
-            <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructor.lastname} onChange={handleInputChange} required />
-            <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructor.email} onChange={handleInputChange} required />
-            <div className="text-center">
-              <button type="submit" className="btn btn-primary btn-sm w-25">Add Instructor</button>
+      {/* Conditionally Render Forms */}
+      {activeForm && (
+        <div className="fixed-form-container">
+          <button className="close-button" onClick={() => setActiveForm(null)}>X</button>
+          {activeForm === 'add' && (
+            <div className="mb-4">
+              <h3>Add Instructor</h3>
+              <form onSubmit={handleAddInstructor}>
+                <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructor.id} onChange={handleInputChange} />
+                <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructor.name} onChange={handleInputChange} required />
+                <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructor.lastname} onChange={handleInputChange} required />
+                <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructor.email} onChange={handleInputChange} required />
+                <div className="text-center">
+                  <button type="submit" className="btn btn-primary btn-sm w-25">Add Instructor</button>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
-      )}
+          )}
 
-      {activeForm === 'update' && (
-        <div className="mb-4">
-          <h3>Update Instructor</h3>
-          <form onSubmit={handleUpdateSubmit}>
-            <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructorPut.id} onChange={handleInputChangePut} required />
-            <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructorPut.name} onChange={handleInputChangePut} required />
-            <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} required />
-            <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} required />
-            <div className="text-center">
-              <button type="submit" className="btn btn-warning btn-sm w-25">Update Instructor</button>
+          {activeForm === 'update' && (
+            <div className="mb-4">
+              <h3>Update Instructor</h3>
+              <form onSubmit={handleUpdateSubmit}>
+                <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructorPut.id} onChange={handleInputChangePut} required />
+                <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructorPut.name} onChange={handleInputChangePut} required />
+                <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} required />
+                <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} required />
+                <div className="text-center">
+                  <button type="submit" className="btn btn-warning btn-sm w-25">Update Instructor</button>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
-      )}
+          )}
 
-      {activeForm === 'delete' && (
-        <div className="mb-4">
-          <h3>Delete Instructor</h3>
-          <form onSubmit={handleDeleteSubmit}>
-            <input type="text" className="form-control mb-2" placeholder="ID" value={deleteId} onChange={handleDeleteChange} required />
-            <div className="text-center">
-              <button type="submit" className="btn btn-danger btn-sm w-25">Delete Instructor</button>
+          {activeForm === 'delete' && (
+            <div className="mb-4">
+              <h3>Delete Instructor</h3>
+              <form onSubmit={handleDeleteSubmit}>
+                <input type="text" className="form-control mb-2" placeholder="ID" value={deleteId} onChange={handleDeleteChange} required />
+                <div className="text-center">
+                  <button type="submit" className="btn btn-danger btn-sm w-25">Delete Instructor</button>
+                </div>
+              </form>
             </div>
-          </form>
+          )}
         </div>
       )}
     </div>
