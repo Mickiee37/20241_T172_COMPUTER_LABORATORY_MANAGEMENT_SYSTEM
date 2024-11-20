@@ -1,27 +1,12 @@
 import mongoose from 'mongoose';
-const { Schema } = mongoose;
 
-const attendanceLogSchema = new Schema(
-  {
-    instructor: { 
-      type: mongoose.Schema.Types.ObjectId,  // Reference to Instructor model
-      ref: 'Instructor',
-      required: true 
-    },
-    timeIn: { 
-      type: Date, 
-      required: true 
-    },
-    timeOut: { 
-      type: Date 
-    },
-  },
-  {
-    timestamps: true, // Will add createdAt and updatedAt automatically
-  }
-);
+const AttendanceLogSchema = new mongoose.Schema({
+  instructor: { type: mongoose.Schema.Types.ObjectId, ref: 'Instructor', required: true },
+  instructorName: { type: String, required: true },
+  timeIn: { type: Date, default: Date.now },
+  timeOut: { type: Date },
+  labNumber: { type: Number, required: true },
+  isActive: { type: Boolean, default: true }
+});
 
-// Create the model for the attendance log
-const AttendanceLog = mongoose.model('AttendanceLog', attendanceLogSchema);
-
-export default AttendanceLog;
+export default mongoose.model('AttendanceLog', AttendanceLogSchema);

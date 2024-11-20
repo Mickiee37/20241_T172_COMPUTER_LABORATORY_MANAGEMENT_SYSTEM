@@ -10,6 +10,7 @@ import Dashboard from './Dashboard.jsx';
 import App from './App.jsx';
 import QRCodeGenerator from './QRCodeGenerator';
 import VerifyEmail from './VerifyEmail';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

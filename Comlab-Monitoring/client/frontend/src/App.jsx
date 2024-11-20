@@ -2,11 +2,6 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
-import { IoPersonSharp } from "react-icons/io5";
-import { RiComputerLine } from "react-icons/ri";
-import { FaQrcode } from 'react-icons/fa'; // Import QR code icon from FontAwesome
-import { MdHistory } from "react-icons/md";
-import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate for navigation
 
 const App = () => {
   const [instructors, setInstructors] = useState([]);
@@ -14,11 +9,7 @@ const App = () => {
   const [newInstructorPut, setNewInstructorPut] = useState({ id: '', name: '', lastname: '', email: '' });
   const [deleteId, setDeleteId] = useState('');
   const [activeForm, setActiveForm] = useState(null);
-  const navigate = useNavigate(); // React Router's useNavigate for redirection
-  const handleLogout = () => {
-    // Redirect to the usertype selection menu
-    navigate('/');
-  };
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchInstructors();
@@ -73,7 +64,7 @@ const App = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     if (!validateEmail(newInstructorPut.email)) {
-      console.error("Invalid email. '@buksu.buksu.edu.ph' emails are allowed.");
+      console.error("Invalid email. '@buksu.edu.ph' emails are allowed.");
       return;
     }
     try {
@@ -84,7 +75,7 @@ const App = () => {
       });
       if (!response.ok) throw new Error('Failed to update instructor');
       await fetchInstructors();
-      setNewInstructorPut({ id: '', name: '', lastname: '',email: '' });
+      setNewInstructorPut({ id: '', name: '', lastname: '', email: '' });
     } catch (error) {
       console.error('Error updating instructor', error);
     }
@@ -122,46 +113,12 @@ const App = () => {
     setActiveForm('delete');
     setDeleteId(id);
   };
-
   
 
   return (
     <div className="container mt-5">
-         <nav className="navbar fixed-top navbar-expand-lg bg-black">
-   <div className="container">
-     {/* Left: Brand */}
-     <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
-     {/* Center: Icons and Labels */}
-     <div className="navbar-center">
-     <Link to="/Dashboard" className="navbar-item">
-   <RiComputerLine className="icon computer-icon" />
-   <span className="icon-label">Computer Lab</span>
- </Link>
-       <Link to="/app" className="navbar-item">
-         <IoPersonSharp className="icon person-icon" />
-         <span className="icon-label">Instructor Menu</span>
-       </Link>
-       <Link to="/qr-code" className="navbar-item">
-         <FaQrcode className="icon qr-icon" />
-         <span className="icon-label">QR Generator</span>
-       </Link>
-       <Link to="/qr-code" className="navbar-item">
-        <MdHistory className="icon history-icon" />
-        <span className="icon-label">History Log</span>
-      </Link>
-     </div>
-     {/* Right: Logout Button */}
-     <button className="logout-button" onClick={handleLogout}>
-       Logout
-     </button>
-   </div>
- </nav>
-    <br></br>
-    <br></br>
-    <div className="d-flex justify-content-between align-items-center mb-4">
-      <h1 className="Instructh1">Instructor Management</h1>
-      <button className="btn btn-sm btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
-      </div>
+      <h1 className="text-center mb-4">Instructor Management</h1>
+
       <table className="table table-striped table-hover table-bordered mb-5">
         <thead className="table-light">
           <tr>
@@ -200,10 +157,17 @@ const App = () => {
       <td colSpan="5" className="text-center">No instructors fetched</td>
     </tr>
   )}
-        </tbody>
+</tbody>
+
+
+
       </table>
 
-      {/* Conditionally Render Forms */}
+      <div className="d-flex justify-content-around mb-4">
+        <button className="btn btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
+        
+      </div>
+
       {activeForm === 'add' && (
         <div className="mb-4">
           <h3>Add Instructor</h3>

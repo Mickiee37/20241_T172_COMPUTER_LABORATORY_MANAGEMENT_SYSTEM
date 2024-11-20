@@ -3,6 +3,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "./firebase"; // Import auth and provider from firebase.js
 import { useNavigate } from "react-router-dom"; // For navigation
 import axios from "axios"; // Import axios for making API calls
+import ReCAPTCHA from "react-google-recaptcha"; // Import the reCAPTCHA component
 import './Login.css';
 
 const Login = () => {
@@ -11,13 +12,14 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const navigate = useNavigate();
   const [error, setError] = useState(''); // For storing error messages
+  const [recaptchaValue, setRecaptchaValue] = useState(''); // For storing reCAPTCHA token
 
   // Google Sign-In Handler
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log("User  Info: ", user);
+      console.log("User Info: ", user);
       navigate('/dashboard'); // Navigate to the dashboard after successful login
     } catch (error) {
       console.error("Error during Google sign-in:", error.message);
@@ -25,23 +27,33 @@ const Login = () => {
     }
   };
 
+  // reCAPTCHA Change Handler
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaValue(value); // Update recaptcha value when user solves the puzzle
+  };
+
   // Email/Password Login Handler
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent form submission
 
-    console.log('Email:', email);
-    console.log('Password:', password);
+    if (!recaptchaValue) {
+      setError("Please complete the reCAPTCHA");
+      return;
+    }
 
     try {
-      // Send a POST request to check if the user exists in your backend
-      const response = await axios.post('http://localhost:8000/api/users/check-user', { email, password });
+      console.log({ email, password, recaptchaValue });  // Add this line to debug
+      const response = await axios.post('http://localhost:8000/api/users/check-user', { 
+        email, 
+        password, 
+        recaptchaValue 
+      });
 
       if (response.status === 200) {
-        // If user exists and credentials are correct, navigate to dashboard
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed'); // Show error if login fails
+      setError(err.response?.data?.message || 'Login failed');
       console.error('Login error:', err);
     }
   };
@@ -88,6 +100,13 @@ const Login = () => {
           </div>
 
           {error && <p className="error-message">{error}</p>} {/* Display error message */}
+
+          {/* reCAPTCHA widget */}
+          <ReCAPTCHA
+            sitekey="6Leo5IQqAAAAAFgqYPT72ORc-4tOpj3iJ_vdYGfM" // Use the actual reCAPTCHA site key here
+            onChange={handleRecaptchaChange}
+          />
+
           <button type="submit" className="login-button">Login</button>
         </form>
         <br /><br />

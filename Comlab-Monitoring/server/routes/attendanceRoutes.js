@@ -1,74 +1,49 @@
 import express from 'express';
 import AttendanceLog from '../models/AttendanceLog.js';
-import QRCode from 'qrcode'; // QR Code generation library
 
 const router = express.Router();
 
-// Route to log attendance
-router.post('/attendance', async (req, res) => {
-  const { instructorId, timeIn } = req.body;
-
-  // Validate input
-  if (!instructorId || !timeIn) {
-    return res.status(400).json({ message: 'Instructor ID and timeIn are required.' });
-  }
+// Handle QR code scan
+router.post('/scan', async (req, res) => {
+  const { instructorId, instructorName, labNumber } = req.body;
 
   try {
-    const attendanceLog = new AttendanceLog({
+    // Check for active session
+    const activeSession = await AttendanceLog.findOne({
       instructor: instructorId,
-      timeIn: new Date(timeIn),
+      isActive: true
     });
 
-    await attendanceLog.save();
-    res.status(201).json({ message: 'Attendance logged successfully', attendanceLog });
-  } catch (error) {
-    console.error('Error logging attendance:', error);
-    res.status(500).json({ message: 'Failed to log attendance. Please try again later.' });
-  }
-});
-
-// Optional: Route to update timeOut
-router.patch('/attendance/:id', async (req, res) => {
-  const { id } = req.params;
-  const { timeOut } = req.body;
-
-  if (!timeOut) {
-    return res.status(400).json({ message: 'timeOut is required.' });
-  }
-
-  try {
-    const attendanceLog = await AttendanceLog.findByIdAndUpdate(
-      id,
-      { timeOut: new Date(timeOut) },
-      { new: true }
-    );
-
-    if (!attendanceLog) {
-      return res.status(404).json({ message: 'Attendance log not found.' });
+    if (activeSession) {
+      // Clock out
+      activeSession.timeOut = new Date();
+      activeSession.isActive = false;
+      await activeSession.save();
+      return res.json({ 
+        message: 'Clocked out successfully',
+        action: 'clockOut',
+        session: activeSession
+      });
     }
 
-    res.status(200).json({ message: 'Time out logged successfully', attendanceLog });
+    // Clock in
+    const newSession = new AttendanceLog({
+      instructor: instructorId,
+      instructorName,
+      labNumber,
+      timeIn: new Date(),
+      isActive: true
+    });
+    await newSession.save();
+
+    res.json({
+      message: 'Clocked in successfully',
+      action: 'clockIn',
+      session: newSession
+    });
   } catch (error) {
-    console.error('Error updating time out:', error);
-    res.status(500).json({ message: 'Failed to update time out. Please try again later.' });
-  }
-});
-
-// Route to generate a QR code
-router.get('/api/qr-code', async (req, res) => {
-  const { instructorName, timeIn } = req.query;
-
-  // Validate the incoming query parameters
-  if (!instructorName || !timeIn) {
-    return res.status(400).json({ message: 'Instructor name and timeIn are required.' });
-  }
-
-  try {
-    const qrCodeUrl = await QRCode.toDataURL(`Name: ${instructorName}, Time In: ${timeIn}`);
-    res.status(200).json({ qrCodeUrl });
-  } catch (error) {
-    console.error('Error generating QR code:', error);
-    res.status(500).json({ message: 'Failed to generate QR code.' });
+    console.error('Scan processing error:', error);
+    res.status(500).json({ message: 'Failed to process scan' });
   }
 });
 

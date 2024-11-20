@@ -10,11 +10,6 @@ import { MdHistory } from "react-icons/md";
 import { FaQrcode } from 'react-icons/fa'; // Import QR code icon from FontAwesome
 import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate for navigation
 
-
-
-
-
-
 const QRCodeGenerator = () => {
   const [instructorName, setInstructorName] = useState('');
   const [qrData, setQrData] = useState('');
@@ -29,16 +24,23 @@ const QRCodeGenerator = () => {
 
     setLoading(true);
     try {
-      const timeIn = moment().format('YYYY-MM-DD HH:mm:ss');
-      const response = await axios.get('http://localhost:8000/api/qr-code', {
+      const response = await axios.get('http://localhost:8000/api/instructor');
+      const instructor = response.data.find(i => i.name === instructorName);
+      
+      if (!instructor) {
+        alert("Instructor not found!");
+        return;
+      }
+
+      const qrResponse = await axios.get('http://localhost:8000/api/qr-code', {
         params: {
           instructorName,
-          timeIn,
+          instructorId: instructor.id,
         },
       });
 
-      if (response.data.qrCodeUrl) {
-        setServerData(response.data.qrCodeUrl);
+      if (qrResponse.data.qrCodeUrl) {
+        setServerData(qrResponse.data.qrCodeUrl);
       }
     } catch (error) {
       console.error('Error fetching QR code from server:', error);
@@ -73,66 +75,66 @@ const QRCodeGenerator = () => {
   };
   return (
     <div className="container">
-            {/* Navbar */}
-<nav className="navbar fixed-top navbar-expand-lg bg-black">
-  <div className="container">
-    {/* Left: Brand */}
-    <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
-    {/* Center: Icons and Labels */}
-    <div className="navbar-center">
-    <Link to="/Dashboard" className="navbar-item">
-    <RiComputerLine className="icon computer-icon" />
-    <span className="icon-label">Computer Lab</span>
-    </Link>
-      <Link to="/app" className="navbar-item">
-        <IoPersonSharp className="icon person-icon" />
-        <span className="icon-label">Instructor Menu</span>
-      </Link>
-      <Link to="/qr-code" className="navbar-item">
-        <FaQrcode className="icon qr-icon" />
-        <span className="icon-label">QR Generator</span>
-      </Link>
-      <Link to="/qr-code" className="navbar-item">
-      <MdHistory className="icon history-icon" />
-      <span className="icon-label">History Log</span>
-    </Link>
-    </div>
-    {/* Right: Logout Button */}
-    <button className="logout-button" onClick={handleLogout}>
-      Logout
-    </button>
-  </div>
-</nav>
+      {/* Navbar */}
+      <nav className="navbar fixed-top navbar-expand-lg bg-black">
+        <div className="container">
+          {/* Left: Brand */}
+          <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
+          {/* Center: Icons and Labels */}
+          <div className="navbar-center">
+            <Link to="/Dashboard" className="navbar-item">
+              <RiComputerLine className="icon computer-icon" />
+              <span className="icon-label">Computer Lab</span>
+            </Link>
+            <Link to="/app" className="navbar-item">
+              <IoPersonSharp className="icon person-icon" />
+              <span className="icon-label">Instructor Menu</span>
+            </Link>
+            <Link to="/qr-code" className="navbar-item">
+              <FaQrcode className="icon qr-icon" />
+              <span className="icon-label">QR Generator</span>
+            </Link>
+            <Link to="/qr-code" className="navbar-item">
+              <MdHistory className="icon history-icon" />
+              <span className="icon-label">History Log</span>
+            </Link>
+          </div>
+          {/* Right: Logout Button */}
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </nav>
     
-    <div className="box">
-      <input
-        type="text"
-        value={instructorName}
-        onChange={(e) => setInstructorName(e.target.value)}
-        placeholder="Enter Instructor Name"
-        className="form-control"
-      />
+      <div className="box">
+        <input
+          type="text"
+          value={instructorName}
+          onChange={(e) => setInstructorName(e.target.value)}
+          placeholder="Enter Instructor Name"
+          className="form-control"
+        />
 
-      <p>Time In: {moment().format('YYYY-MM-DD HH:mm:ss')}</p>
+        <p>Time In: {moment().format('YYYY-MM-DD HH:mm:ss')}</p>
 
-      <div>
+        <div>
         {loading ? (
-          <p>Loading QR code...</p>
-        ) : serverData ? (
-          <div>
-            <p>QR Code fetched from Server</p>
-            <img src={serverData} alt="Instructor QR Code" />
-          </div>
-        ) : (
-          <div id="qr-code">
-            <QRCode value={qrData} />
-          </div>
-        )}
-      </div>
+            <p>Loading QR code...</p>
+          ) : serverData ? (
+            <div>
+              <p>QR Code fetched from Server</p>
+              <img src={serverData} alt="Instructor QR Code" />
+            </div>
+          ) : (
+            <div id="qr-code">
+              <QRCode value={qrData} />
+            </div>
+          )}
+        </div>
 
-      <button onClick={fetchServerQRCode} className="btn btn-primary">Fetch Server QR Code</button>
-      <button onClick={downloadQRCode} className="btn btn-success">Download QR Code</button>
-    </div>
+        <button onClick={fetchServerQRCode} className="btn btn-primary">Fetch Server QR Code</button>
+        <button onClick={downloadQRCode} className="btn btn-success">Download QR Code</button>
+      </div>
     </div>      
   );
 };
