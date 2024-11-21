@@ -300,3 +300,36 @@ h1 {
   width: 100%; /* Ensure inputs take full width of the column */
 }
 
+
+.pagination {
+  display: flex;
+  justify-content: flex-end; /* Align pagination controls to the right */
+  margin-top: 20px; /* Space above the pagination */
+}
+
+.page-button {
+  width: 3%;
+  margin: 0 5px; /* Space between buttons */
+  padding: 8px 12px; /* Padding for buttons */
+  border: none; /* Remove default border */
+  background-color: #6c757d; /* Gray background color */
+  color: white; /* Text color */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.9rem; /* Font size */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
+
+.page-button:hover {
+  background-color: #5a6268; /* Darker gray on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+.page-button.active {
+  background-color: #007bff; /* Blue background for active button */
+  font-weight: bold; /* Bold text for active button */
+}
+
+.page-button:focus {
+  outline: none; /* Remove focus outline */
+}

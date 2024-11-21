@@ -27,6 +27,8 @@
     background-color: #ffffff;
     box-shadow: 0 0 10px rgba(201, 0, 0, 0.1);
     border-radius: 8px;
+    max-width: 500px; /* Ensure max width to match Login form */
+    margin: 0 auto; /* Center the form */
 }
 
 .register-form h1 {
@@ -49,7 +51,7 @@
 }
 
 .register-logo {
-    width: 150px;
+    width: 7.5rem;
     margin-bottom: 1rem;
 }
 
@@ -59,17 +61,14 @@ form {
     flex-direction: column;
 }
 
-form input[type="email"]{
-
-    
-}
+form input[type="email"],
 form input[type="password"] {
     width: 100%;
     padding: 0.8rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem; /* Consistent margin */
     border: 1px solid #ddd;
     border-radius: 15px;
-    }
+}
 
 .register-button {
     padding: 0.8rem;
@@ -94,6 +93,7 @@ form input[type="password"] {
     margin-top: 1rem;
     font-size: 0.9rem;
 }
-.show-password{
+
+.show-password {
     margin-left: 0.5rem;
 }
