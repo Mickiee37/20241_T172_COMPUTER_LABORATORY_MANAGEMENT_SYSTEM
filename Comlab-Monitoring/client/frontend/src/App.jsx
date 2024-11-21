@@ -16,6 +16,10 @@ const App = () => {
   const [activeForm, setActiveForm] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+   // Pagination state
+   const [currentPage, setCurrentPage] = useState(1);
+   const itemsPerPage = 5; // Number of items per page
+
   const navigate = useNavigate(); // React Router's useNavigate for redirection
   const handleLogout = () => {
     // Redirect to the usertype selection menu
@@ -137,6 +141,11 @@ const App = () => {
     instructor.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+   // Pagination logic
+   const indexOfLastInstructor = currentPage * itemsPerPage;
+   const indexOfFirstInstructor = indexOfLastInstructor - itemsPerPage;
+   const currentInstructors = filteredInstructors.slice(indexOfFirstInstructor, indexOfLastInstructor);
+
   return (
     <div className="container mt-5">
       <nav className="navbar fixed-top navbar-expand-lg bg-black">
@@ -194,8 +203,8 @@ const App = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredInstructors.length > 0 ? (
-              filteredInstructors.map((instructor) => (
+            {currentInstructors.length > 0 ? (
+              currentInstructors.map((instructor) => (
                 <tr key={instructor.id}>
                   <td>{instructor.id}</td>
                   <td>{instructor.name}</td>
@@ -224,6 +233,18 @@ const App = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="pagination">
+        {Array.from({ length: Math.ceil(filteredInstructors.length / itemsPerPage) }, (_, index) => (
+          <button
+            key={index + 1}
+            className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
 
       {/* Conditionally Render Forms */}
