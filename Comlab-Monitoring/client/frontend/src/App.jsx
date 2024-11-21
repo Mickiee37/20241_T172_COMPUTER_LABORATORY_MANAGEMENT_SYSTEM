@@ -133,7 +133,8 @@ const App = () => {
   const filteredInstructors = instructors.filter(instructor =>
     instructor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     instructor.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    instructor.email.toLowerCase().includes(searchQuery.toLowerCase())
+    instructor.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    instructor.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -168,16 +169,15 @@ const App = () => {
         </div>
       </nav>
       <br></br>
-      <br></br>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
         <h1 className="Instructh1">Instructor Management</h1>
         <button className="btn btn-sm btn-primary" onClick={() => setActiveForm('add')}>Add Instructor</button>
       </div>
       <div className="mb-4">
         <input
           type="text"
-          className="form-control"
-          placeholder="Search by name, last name, or email"
+          className="form-controll"
+          placeholder="Search by ID, First Name, Last Name, or Email"
           value={searchQuery}
           onChange={handleSearchChange}
         />
@@ -231,34 +231,110 @@ const App = () => {
         <div className="fixed-form-container">
           <button className="close-button" onClick={() => setActiveForm(null)}>X</button>
           {activeForm === 'add' && (
-            <div className="mb-4">
-              <h3>Add Instructor</h3>
-              <form onSubmit={handleAddInstructor}>
-                <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructor.id} onChange={handleInputChange} />
-                <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructor.name} onChange={handleInputChange} required />
-                <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructor.lastname} onChange={handleInputChange} required />
-                <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructor.email} onChange={handleInputChange} required />
-                <div className="text-center">
-                  <button type="submit" className="btn btn-primary btn-sm w-25">Add Instructor</button>
-                </div>
-              </form>
-            </div>
-          )}
+  <div className="mb-4">
+    <h3>Add Instructor</h3>
+    <form onSubmit={handleAddInstructor}>
+      <div className="form-row">
+        <div className="form-column">
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="ID"
+            name="id"
+            value={newInstructor.id}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="First Name"
+            name="name"
+            value={newInstructor.name}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-column">
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="Last Name"
+            name="lastname"
+            value={newInstructor.lastname}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            type="email"
+            className="form-control mb-2"
+            placeholder="Email"
+            name="email"
+            value={newInstructor.email}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+      </div>
+      <div className="text-center">
+        <button type="submit" className="btn btn-primary btn-sm w-25">Add Instructor</button>
+      </div>
+    </form>
+  </div>
+)}
 
-          {activeForm === 'update' && (
-            <div className="mb-4">
-              <h3>Update Instructor</h3>
-              <form onSubmit={handleUpdateSubmit}>
-                <input type="text" className="form-control mb-2" placeholder="ID" name="id" value={newInstructorPut.id} onChange={handleInputChangePut} required />
-                <input type="text" className="form-control mb-2" placeholder="Name" name="name" value={newInstructorPut.name} onChange={handleInputChangePut} required />
-                <input type="text" className="form-control mb-2" placeholder="Last Name" name="lastname" value={newInstructorPut.lastname} onChange={handleInputChangePut} required />
-                <input type="email" className="form-control mb-2" placeholder="Email" name="email" value={newInstructorPut.email} onChange={handleInputChangePut} required />
-                <div className="text-center">
-                  <button type="submit" className="btn btn-warning btn-sm w-25">Update Instructor</button>
-                </div>
-              </form>
-            </div>
-          )}
+{activeForm === 'update' && (
+  <div className="mb-4">
+    <h3>Update Instructor</h3>
+    <form onSubmit={handleUpdateSubmit}>
+      <div className="form-row">
+        <div className="form-column">
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="ID"
+            name="id"
+            value={newInstructorPut.id}
+            onChange={handleInputChangePut}
+            required
+          />
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="First Name"
+            name="name"
+            value={newInstructorPut.name}
+            onChange={handleInputChangePut}
+            required
+          />
+        </div>
+        <div className="form-column">
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="Last Name"
+            name="lastname"
+            value={newInstructorPut.lastname}
+            onChange={handleInputChangePut}
+            required
+          />
+          <input
+            type="email"
+            className="form-control mb-2"
+            placeholder="Email"
+            name="email"
+            value={newInstructorPut.email}
+            onChange={handleInputChangePut}
+            required
+          />
+        </div>
+      </div>
+      <div className="text-center">
+        <button type="submit" className="btn btn-warning btn-sm w-25">Update Instructor</button>
+      </div>
+    </form>
+  </div>
+)}
 
           {activeForm === 'delete' && (
             <div className="mb-4">

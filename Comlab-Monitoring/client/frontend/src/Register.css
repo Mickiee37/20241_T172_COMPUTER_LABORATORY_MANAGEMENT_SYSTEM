@@ -59,14 +59,17 @@ form {
     flex-direction: column;
 }
 
-form input[type="email"],
+form input[type="email"]{
+
+    
+}
 form input[type="password"] {
     width: 100%;
     padding: 0.8rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 15px;
-}
+    }
 
 .register-button {
     padding: 0.8rem;
@@ -90,4 +93,7 @@ form input[type="password"] {
 .login-link {
     margin-top: 1rem;
     font-size: 0.9rem;
+}
+.show-password{
+    margin-left: 0.5rem;
 }

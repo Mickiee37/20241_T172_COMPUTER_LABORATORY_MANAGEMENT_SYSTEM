@@ -67,12 +67,9 @@ const Login = () => {
         <img src="COTLOGO.png" alt="Logo" className="login-logo" />
         <h1>BUKSU</h1>
         <p className="com">Computer Laboratory Monitoring System</p>
-
         <button onClick={handleGoogleSignIn} className="google-login">
           <img src="google.png" alt="Google icon" className="google-icon" />Continue with Google
         </button>
-
-        <hr />
 
         <form onSubmit={handleLogin}>
           <input
@@ -102,14 +99,15 @@ const Login = () => {
           {error && <p className="error-message">{error}</p>} {/* Display error message */}
 
           {/* reCAPTCHA widget */}
-          <ReCAPTCHA
-            sitekey="6Leo5IQqAAAAAFgqYPT72ORc-4tOpj3iJ_vdYGfM" // Use the actual reCAPTCHA site key here
-            onChange={handleRecaptchaChange}
-          />
+          
 
           <button type="submit" className="login-button">Login</button>
         </form>
-        <br /><br />
+        <br></br>
+        <ReCAPTCHA
+            sitekey="6Leo5IQqAAAAAFgqYPT72ORc-4tOpj3iJ_vdYGfM" // Use the actual reCAPTCHA site key here
+            onChange={handleRecaptchaChange}
+          />
         <p className="register-link">
           Don't have an account? <a href="/register">Register</a>
         </p>
