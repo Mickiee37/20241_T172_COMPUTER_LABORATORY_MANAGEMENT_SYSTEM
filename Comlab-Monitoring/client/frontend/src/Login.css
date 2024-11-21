@@ -127,8 +127,7 @@
   }
   
   .login-logo {
-    width: 120px;
-    margin-bottom: 
+    width: 120px; 
   }
   
   .google-login {
@@ -146,9 +145,8 @@
   /* reCAPTCHA Styles */
   .recaptcha-container {
     margin-left: 50px;
-    width: 50%; /* Ensure it fits within the form */
-    
-    
+    width: 0%; /* Ensure it fits within the form */
+
   }
   
   .recaptcha-container iframe {
