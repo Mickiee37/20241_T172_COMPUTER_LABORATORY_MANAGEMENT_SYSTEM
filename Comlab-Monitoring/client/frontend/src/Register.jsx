@@ -133,9 +133,15 @@ const Register = () => {
               placeholder="Password"
               required
             />
-            <button type="button" onClick={togglePasswordVisibility}>
-              {passwordVisible ? 'Hide' : 'Show'}
-            </button>
+            <div className="show-password">
+            <input 
+              type="checkbox" 
+              id="showPassword" 
+              checked={passwordVisible} 
+              onChange={togglePasswordVisibility} 
+            />
+             <label htmlFor="showPassword">Show Password</label>
+            </div>
             {errors.password && <p className="error-message">{errors.password}</p>}
           </div>
 
@@ -148,9 +154,15 @@ const Register = () => {
               placeholder="Confirm Password"
               required
             />
-            <button type="button" onClick={toggleConfirmPasswordVisibility}>
-              {confirmPasswordVisible ? 'Hide' : 'Show'}
-            </button>
+            <div className="show-password">
+              <input 
+                type="checkbox" 
+                id="showConfirmPassword" 
+                checked={confirmPasswordVisible} 
+                onChange={toggleConfirmPasswordVisibility} 
+              />
+              <label htmlFor="showConfirmPassword">Show Confirm Password</label>
+            </div>
             {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
           </div>
 
