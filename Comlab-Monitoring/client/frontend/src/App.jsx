@@ -128,7 +128,6 @@ const App = () => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
-
   // Filter instructors based on search query
   const filteredInstructors = instructors.filter(instructor =>
     instructor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -296,8 +295,9 @@ const App = () => {
             name="id"
             value={newInstructorPut.id}
             onChange={handleInputChangePut}
+            readOnly
             required
-          />
+            />
           <input
             type="text"
             className="form-control mb-2"
@@ -335,12 +335,11 @@ const App = () => {
     </form>
   </div>
 )}
-
           {activeForm === 'delete' && (
             <div className="mb-4">
               <h3>Delete Instructor</h3>
               <form onSubmit={handleDeleteSubmit}>
-                <input type="text" className="form-control mb-2" placeholder="ID" value={deleteId} onChange={handleDeleteChange} required />
+                <input type="text" className="form-control mb-2" placeholder="ID" value={deleteId} onChange={handleDeleteChange} readOnly required />
                 <div className="text-center">
                   <button type="submit" className="btn btn-danger btn-sm w-25">Delete Instructor</button>
                 </div>
