@@ -10,11 +10,13 @@ export const generateQRCode = async (req, res) => {
 
   try {
     // Create QR code data with instructor info
-    const qrData = JSON.stringify({
+    let qrData = JSON.stringify({
       instructorId,
       instructorName,
       type: 'attendance'
     });
+
+    //qrData = 'http://localhost:8000/api/instructor/673571cb8754cf57a11f8ec5';
 
     // Generate QR code as base64
     const qrCodeUrl = await QRCode.toDataURL(qrData);

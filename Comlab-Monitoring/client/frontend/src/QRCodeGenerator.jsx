@@ -53,7 +53,8 @@ const QRCodeGenerator = () => {
   useEffect(() => {
     if (!serverData && instructorName) {
       const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-      setQrData(JSON.stringify({ name: instructorName, timeIn: currentTime }));
+      setQrData(JSON.stringify({ name: instructorName, timeIn: currentTime , link: 'http://localhost:8000/api/instructor/673571cb8754cf57a11f8ec5'}));
+      //setQrData("http://localhost:8000/api/instructor/673571cb8754cf57a11f8ec5");
     }
   }, [instructorName, serverData]);
 

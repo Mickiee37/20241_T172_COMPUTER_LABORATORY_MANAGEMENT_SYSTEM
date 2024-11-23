@@ -19,6 +19,7 @@ const App = () => {
    // Pagination state
    const [currentPage, setCurrentPage] = useState(1);
    const itemsPerPage = 5; // Number of items per page
+   const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'ascending' });
 
   const navigate = useNavigate(); // React Router's useNavigate for redirection
   const handleLogout = () => {
@@ -40,6 +41,25 @@ const App = () => {
       console.error("Error fetching instructors", error);
     }
   };
+
+  const handleSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+
+    setSortConfig({ key, direction });
+  };
+  const sortedInstructors = [...instructors].sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === 'ascending' ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === 'ascending' ? 1 : -1;
+    }
+    return 0;
+  });
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -133,7 +153,7 @@ const App = () => {
     setSearchQuery(e.target.value);
   };
   // Filter instructors based on search query
-  const filteredInstructors = instructors.filter(instructor =>
+  const filteredInstructors = sortedInstructors.filter(instructor =>
     instructor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     instructor.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
     instructor.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -191,15 +211,34 @@ const App = () => {
         />
       </div>
       <div className="table-wrapper">
-        <table className="table table-striped table-hover table-bordered mb-5">
+        <table className="table table-striped table-hover table-bordered mb-5" id="myTable" >
           <thead className="table-light">
-            <tr>
-              <th>ID</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
+          <tr>
+      <th
+        className={sortConfig.key === 'id' ? (sortConfig.direction === 'ascending' ? 'sorted-ascending' : 'sorted-descending') : ''}
+        onClick={() => handleSort('id')}
+      >
+        ID
+      </th>
+      <th
+        className={sortConfig.key === 'name' ? (sortConfig.direction === 'ascending' ? 'sorted-ascending' : 'sorted-descending') : ''}
+        onClick={() => handleSort('name')}
+      >
+        Name
+      </th>
+      <th
+        className={sortConfig.key === 'lastname' ? (sortConfig.direction === 'ascending' ? 'sorted-ascending' : 'sorted-descending') : ''}
+        onClick={() => handleSort('lastname')}
+      >
+        Last Name
+      </th>
+      <th
+        className={sortConfig.key === 'email' ? (sortConfig.direction === 'ascending' ? 'sorted-ascending' : 'sorted-descending') : ''}
+        onClick={() => handleSort('email')}
+      >
+        Email
+      </th>
+    </tr>
           </thead>
           <tbody>
             {currentInstructors.length > 0 ? (

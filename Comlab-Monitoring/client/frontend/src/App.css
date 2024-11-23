@@ -333,3 +333,36 @@ h1 {
 .page-button:focus {
   outline: none; /* Remove focus outline */
 }
+
+/* Add this to your App.css or relevant CSS file */
+
+.table th {
+  cursor: pointer; /* Change cursor to pointer to indicate clickability */
+  background-color: #f8f9fa; /* Light background for headers */
+  color: #495057; /* Darker text color for contrast */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Change background color on hover */
+.table th:hover {
+  background-color: #e9ecef; /* Slightly darker background on hover */
+  color: #007bff; /* Change text color on hover */
+}
+
+/* Add a border to the bottom of the header */
+.table th {
+  border-bottom: 2px solid #dee2e6; /* Add a bottom border */
+}
+
+/* Optional: Add an arrow to indicate sorting direction */
+.table th.sorted-ascending::after {
+  content: " ▲"; /* Up arrow for ascending */
+  font-size: 0.8em;
+  color: #007bff; /* Match the color with the text */
+}
+
+.table th.sorted-descending::after {
+  content: " ▼"; /* Down arrow for descending */
+  font-size: 0.8em;
+  color: #007bff; /* Match the color with the text */
+}

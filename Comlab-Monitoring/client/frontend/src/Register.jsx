@@ -13,6 +13,7 @@ const Register = () => {
   const [message, setMessage] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // New loading state
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -34,6 +35,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true
     const newErrors = {};
 
     // Validate email
@@ -57,6 +59,7 @@ const Register = () => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setLoading(false); // Reset loading
       return;
     }
 
@@ -91,6 +94,8 @@ const Register = () => {
     } catch (error) {
       console.error('Error:', error);
       setErrors({ api: 'Error registering user. Please try again later.' });
+    } finally {
+      setLoading(false); // Reset loading
     }
   };
 
@@ -134,13 +139,13 @@ const Register = () => {
               required
             />
             <div className="show-password">
-            <input 
-              type="checkbox" 
-              id="showPassword" 
-              checked={passwordVisible} 
-              onChange={togglePasswordVisibility} 
-            />
-             <label htmlFor="showPassword">Show Password</label>
+              <input 
+                type="checkbox" 
+                id="showPassword" 
+                checked={passwordVisible} 
+                onChange={togglePasswordVisibility} 
+              />
+              <label htmlFor="showPassword">Show Password</label>
             </div>
             {errors.password && <p className="error-message">{errors.password}</p>}
           </div>
@@ -166,7 +171,9 @@ const Register = () => {
             {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
           </div>
 
-          <button type="submit" className="register-button">Register</button>
+          <button type="submit" className="register-button" disabled={loading}>
+            {loading ? 'Registering...' : 'Register'}
+          </button>
           {message && <p className="success-message">{message}</p>}
           {errors.api && <p className="error-message">{errors.api}</p>}
         </form>

@@ -44,9 +44,14 @@ const VerifyEmail = () => {
         }
     }, [emailToken]);
 
-    const handleRedirect = () => {
-        navigate('/login'); // Change to the correct redirect path if necessary
-    };
+    useEffect(() => {
+        if (status === 'success') {
+            // Redirect to login after 2 seconds
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
+        }
+    }, [status, navigate]);
 
     return (
         <div className="verify-email-container">
@@ -57,19 +62,13 @@ const VerifyEmail = () => {
                     <h2 className="verify-email-message verify-email-error">
                         An error occurred while verifying your email. Please try again later.
                     </h2>
-                    <button className="verify-email-button" onClick={handleRedirect}>
-                        Go to Login
-                    </button>
                 </div>
             ) : (
                 <div>
-                    <h2 className="verify-email-message verify-email-success">
-                        Email Verified!
-                    </h2>
-                    <button className="verify-email-button" onClick={handleRedirect}>
-                        Back to Login
-                    </button>
-                </div>
+                <h2 className="verify-email-message verify-email-success">
+                    Email Verified!
+                </h2>
+            </div>
             )}
         </div>
     );
