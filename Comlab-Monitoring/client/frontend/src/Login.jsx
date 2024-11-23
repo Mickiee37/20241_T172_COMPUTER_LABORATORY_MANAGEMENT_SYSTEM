@@ -10,12 +10,14 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const navigate = useNavigate();
   const [error, setError] = useState(''); // For storing error messages
   const [recaptchaValue, setRecaptchaValue] = useState(''); // For storing reCAPTCHA token
 
   // Google Sign-In Handler
   const handleGoogleSignIn = async () => {
+    setIsLoading(true); // Start loading
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -24,6 +26,8 @@ const Login = () => {
     } catch (error) {
       console.error("Error during Google sign-in:", error.message);
       setError("Google Sign-In failed. Please try again."); // Display a user-friendly error message
+    } finally {
+      setIsLoading(false); // End loading
     }
   };
 
@@ -41,8 +45,9 @@ const Login = () => {
       return;
     }
 
+    setIsLoading(true); // Start loading
     try {
-      console.log({ email, password, recaptchaValue });  // Add this line to debug
+      console.log({ email, password, recaptchaValue });  // Debugging info
       const response = await axios.post('http://localhost:8000/api/users/check-user', { 
         email, 
         password, 
@@ -55,6 +60,8 @@ const Login = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
       console.error('Login error:', err);
+    } finally {
+      setIsLoading(false); // End loading
     }
   };
 
@@ -67,8 +74,17 @@ const Login = () => {
         <img src="COTLOGO.png" alt="Logo" className="login-logo" />
         <h1>BUKSU</h1>
         <p className="com">Computer Laboratory Monitoring System</p>
-        <button onClick={handleGoogleSignIn} className="google-login">
-          <img src="google.png" alt="Google icon" className="google-icon" />Continue with Google
+        <button 
+          onClick={handleGoogleSignIn} 
+          className="google-login" 
+          disabled={isLoading} // Disable while loading
+        >
+          {isLoading ? "Loading..." : (
+            <>
+              <img src="google.png" alt="Google icon" className="google-icon" />
+              Continue with Google
+            </>
+          )}
         </button>
 
         <form onSubmit={handleLogin}>
@@ -99,15 +115,19 @@ const Login = () => {
           {error && <p className="error-message">{error}</p>} {/* Display error message */}
 
           {/* reCAPTCHA widget */}
-          
-
-          <button type="submit" className="login-button">Login</button>
-        </form>
-        <br></br>
-        <ReCAPTCHA
+          <ReCAPTCHA
             sitekey="6Leo5IQqAAAAAFgqYPT72ORc-4tOpj3iJ_vdYGfM" // Use the actual reCAPTCHA site key here
             onChange={handleRecaptchaChange}
           />
+
+          <button 
+            type="submit" 
+            className="login-button" 
+            disabled={isLoading} // Disable while loading
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
         <p className="register-link">
           Don't have an account? <a href="/register">Register</a>
         </p>
