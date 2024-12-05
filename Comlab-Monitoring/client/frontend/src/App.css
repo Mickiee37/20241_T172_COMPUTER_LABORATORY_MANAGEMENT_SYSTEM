@@ -85,19 +85,19 @@ h1 {
 }
 
 .btn-warning {
+  font-size: 80%;
   background: linear-gradient(45deg, #F39C12, #E67E22);
   border: none;
   color: white;
-  
-  width: 30%;
+  width: 25%;
 }
 
 .btn-danger {
+  font-size: 80%;
   background: linear-gradient(45deg, #E74C3C, #C0392B);
   border: none;
   color: white;
-  
-  width: 30%;
+  width: 25%;
 }
 
 .btn:hover {
@@ -365,4 +365,31 @@ h1 {
   content: " ▼"; /* Down arrow for descending */
   font-size: 0.8em;
   color: #007bff; /* Match the color with the text */
+}
+
+.modal-body {
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body button {
+  margin-top: 10px;
+  width: 100px; /* adjust as needed */
+  display: block;
+  text-align: center;
+  position: relative;
+  left: 40%;
+}
+
+.modal-body .btn-warning {
+  font-size: 1.1rem;
+  position: relative;
+  left: 40%;
+}
+
+.modal-body .btn-danger {
+  margin-top:5%;
+  font-size: 1.1rem;
+  position: relative;
+  left: 40%;
 }
