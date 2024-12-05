@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
+// Define the schema for instructors
 const instructorSchema = new Schema(
   {
     id: {
@@ -33,5 +34,8 @@ const instructorSchema = new Schema(
   }
 );
 
-const instructorModel = mongoose.model("Instructor", instructorSchema);
-export default instructorModel;
+// Check if the model is already compiled before compiling it again
+const Instructor =
+  mongoose.models.Instructor || mongoose.model("Instructor", instructorSchema);
+
+export default Instructor;

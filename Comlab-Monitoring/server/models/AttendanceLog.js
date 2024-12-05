@@ -1,3 +1,4 @@
+// models/AttendanceLog.js
 import mongoose from 'mongoose';
 
 const AttendanceLogSchema = new mongoose.Schema({
@@ -6,7 +7,8 @@ const AttendanceLogSchema = new mongoose.Schema({
   timeIn: { type: Date, default: Date.now },
   timeOut: { type: Date },
   labNumber: { type: Number, required: true },
-  isActive: { type: Boolean, default: true }
+  isActive: { type: Boolean, default: true },
 });
 
+// Default export
 export default mongoose.model('AttendanceLog', AttendanceLogSchema);

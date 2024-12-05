@@ -1,77 +1,84 @@
-import React, { useEffect, useState } from 'react'; // Import React hooks
+import React, { useEffect, useState } from 'react';
 import LabCard from './LabCard';
 import './dashboard.css';
 import { IoPersonSharp } from "react-icons/io5";
 import { RiComputerLine } from "react-icons/ri";
 import { MdHistory } from "react-icons/md";
-import { FaQrcode } from 'react-icons/fa'; // Import QR code icon from FontAwesome
-import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate for navigation
-import axios from 'axios'; // Import axios for API calls
-import moment from 'moment'; // Import moment for date formatting
+import { FaQrcode } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Dashboard = () => {
-  const navigate = useNavigate(); // React Router's useNavigate for redirection
+  const navigate = useNavigate();
 
+  // Handle logout
   const handleLogout = () => {
-    // Redirect to the user type selection menu
-    navigate('/');
+    navigate('/');  // Redirect to the homepage or login page
   };
 
-  // Initialize state for lab data
-  const [labData, setLabData] = useState([
-    { labNumber: 1, currentUser: null },
-    { labNumber: 2, currentUser: null },
-    { labNumber: 3, currentUser: null },
-    { labNumber: 4, currentUser: null },
-    { labNumber: 5, currentUser: null },
-    { labNumber: 6, currentUser: null },
-    { labNumber: 7, currentUser: null },
-    { labNumber: 8, currentUser: null },
-    { labNumber: 9, currentUser: null },
-    { labNumber: 10, currentUser: null },
-  ]);
+  // State for lab data, loading, and error handling
+  const [labData, setLabData] = useState(
+    Array.from({ length: 10 }, (_, i) => ({
+      labNumber: i + 1,
+      currentUser: null,
+    }))
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch active sessions from the backend
-  useEffect(() => {
-    const fetchActiveSessions = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/attendance/active-sessions'); // API endpoint
-        const activeSessions = response.data;
+  // Function to fetch data from the backend API
+  const fetchGoogleSheetData = async () => {
+    setLoading(true);
+    setError(null); // Clear any previous errors
 
-        // Map active session data to lab data
-        setLabData(prevData =>
-          prevData.map(lab => {
-            const activeSession = activeSessions.find(session => session.labNumber === lab.labNumber);
-            return {
-              ...lab,
-              currentUser: activeSession
-                ? {
-                    name: activeSession.instructorName,
-                    timeIn: moment(activeSession.timeIn).format('YYYY-MM-DD HH:mm'),
-                  }
-                : null,
-            };
-          })
-        );
-      } catch (error) {
-        console.error('Error fetching active sessions:', error);
+    try {
+      const response = await axios.get('http://192.168.255.244:8000/api/google-sheet-data');
+
+      // Handle case where no data is returned
+      if (!response.data || response.data.length === 0) {
+        setError('No data found in Google Sheets.');
+        setLoading(false);
+        return; // Early exit if no data
       }
-    };
 
-    fetchActiveSessions();
-    const interval = setInterval(fetchActiveSessions, 30000); // Refresh every 30 seconds
-    return () => clearInterval(interval); // Clean up interval on unmount
-  }, []);
+      const sheetData = response.data;
+      console.log('Fetched Sheet Data:', sheetData); // Debugging: Log the fetched data
+
+      // Update labData with the fetched data
+      setLabData(prevData =>
+        prevData.map(lab => {
+          const labUsage = sheetData.find(row => row.labNumber === lab.labNumber);
+          return {
+            ...lab,
+            currentUser: labUsage
+              ? {
+                  name: labUsage.instructorName || 'Unknown',
+                  date: labUsage.date || 'N/A',
+                  timeIn: labUsage.timeIn || 'N/A',
+                }
+              : null,
+          };
+        })
+      );
+    } catch (error) {
+      // Detailed error logging
+      console.error('Error fetching Google Sheets data:', error.response || error.message);
+      setError('Unable to fetch Google Sheets data. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch data when the component mounts
+  useEffect(() => {
+    fetchGoogleSheetData(); // Fetch data once when the component mounts
+  }, []);  // Empty dependency array ensures it runs only once
 
   return (
     <div className="dashboard">
-      {/* Navbar */}
       <nav className="navbar fixed-top navbar-expand-lg bg-black">
         <div className="container">
-          {/* Left: Brand */}
           <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
-
-          {/* Center: Icons and Labels */}
           <div className="navbar-center">
             <Link to="/Dashboard" className="navbar-item">
               <RiComputerLine className="icon computer-icon" />
@@ -90,23 +97,26 @@ const Dashboard = () => {
               <span className="icon-label">History Log</span>
             </Link>
           </div>
-
-          {/* Right: Logout Button */}
           <button className="logout-button" onClick={handleLogout}>
             Logout
           </button>
         </div>
       </nav>
 
-      {/* Lab Cards */}
       <div className="lab-cards">
-        {labData.map(lab => (
-          <LabCard
-            key={lab.labNumber}
-            labNumber={lab.labNumber}
-            currentUser={lab.currentUser}
-          />
-        ))}
+        {loading ? (
+          <p>Loading lab data...</p>
+        ) : error ? (
+          <p className="error">{error}</p>
+        ) : (
+          labData.map(lab => (
+            <LabCard
+              key={lab.labNumber}
+              labNumber={lab.labNumber}
+              currentUser={lab.currentUser}
+            />
+          ))
+        )}
       </div>
     </div>
   );

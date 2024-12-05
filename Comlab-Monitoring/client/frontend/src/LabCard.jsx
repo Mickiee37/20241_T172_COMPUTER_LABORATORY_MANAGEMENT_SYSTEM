@@ -1,28 +1,19 @@
 import React from 'react';
-import './LabCard.css';
-import moment from 'moment';
 
 const LabCard = ({ labNumber, currentUser }) => {
+  const hasUser = !!currentUser;
+
   return (
     <div className="lab-card">
-      <div className="lab-header">
-        <span>Comlab {labNumber}</span>
-      </div>
-      
-      {currentUser ? (
-        <div className="user-info">
-          <p>{currentUser.name}</p>
-          <p>
-            Date: {currentUser.timeIn ? moment(currentUser.timeIn).format('MMMM Do YYYY') : 'N/A'}
-          </p>
-          <p>
-            Time In: {currentUser.timeIn ? moment(currentUser.timeIn).format('h:mm A') : 'N/A'}
-          </p>
-        </div>
+      <h2>Comlab {labNumber}</h2>
+      {hasUser ? (
+        <>
+          <h3>{currentUser.name}</h3>
+          <p>Date: {currentUser.date}</p>
+          <p>Time In: {currentUser.timeIn}</p>
+        </>
       ) : (
-        <div className="empty-state">
-          <p>No one is using this lab</p>
-        </div>
+        <p className="no-user">This lab is currently available.</p>
       )}
     </div>
   );

@@ -48,7 +48,7 @@ const Login = () => {
     setIsLoading(true); // Start loading
     try {
       console.log({ email, password, recaptchaValue });  // Debugging info
-      const response = await axios.post('http://localhost:8000/api/users/check-user', { 
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL || 'http://192.168.100.4:8000'}/api/users/check-user`, { 
         email, 
         password, 
         recaptchaValue 
