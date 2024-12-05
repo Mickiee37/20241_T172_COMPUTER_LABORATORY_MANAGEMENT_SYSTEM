@@ -3,7 +3,7 @@ import AttendanceLog from '../models/AttendanceLog.js';
 
 const router = express.Router();
 
-// Handle QR code scan
+// Handle QR code scan (Clock in/Clock out)
 router.post('/scan', async (req, res) => {
   const { instructorId, instructorName, labNumber } = req.body;
 
@@ -19,7 +19,7 @@ router.post('/scan', async (req, res) => {
       activeSession.timeOut = new Date();
       activeSession.isActive = false;
       await activeSession.save();
-      return res.json({ 
+      return res.json({
         message: 'Clocked out successfully',
         action: 'clockOut',
         session: activeSession
@@ -44,6 +44,21 @@ router.post('/scan', async (req, res) => {
   } catch (error) {
     console.error('Scan processing error:', error);
     res.status(500).json({ message: 'Failed to process scan' });
+  }
+});
+
+// Fetch all active sessions
+router.get('/active-sessions', async (req, res) => {
+  try {
+    // Retrieve all sessions where isActive is true
+    const activeSessions = await AttendanceLog.find({ isActive: true }).select(
+      'labNumber instructorName timeIn'
+    );
+
+    res.json(activeSessions);
+  } catch (error) {
+    console.error('Error fetching active sessions:', error);
+    res.status(500).json({ message: 'Error fetching active sessions' });
   }
 });
 

@@ -1,10 +1,15 @@
-// qrCodeRoutes.js
 import express from 'express';
-import { generateQRCode } from '../controllers/qrCodeController.js'; // Correct named import
+import { generateInstructorQR, generateKeyQR, scanQRCode } from '../controllers/qrController.js';
 
 const router = express.Router();
 
-// Define the route for generating the QR code
-router.get('/', generateQRCode);  // This matches '/api/qr-code' on the backend
+// Route to generate QR Code for instructors
+router.post('/instructor', generateInstructorQR);
+
+// Route to generate QR Code for keys
+router.post('/key', generateKeyQR);
+
+// Route to handle QR code scanning and logging timestamp
+router.post('/scan', scanQRCode);
 
 export default router;

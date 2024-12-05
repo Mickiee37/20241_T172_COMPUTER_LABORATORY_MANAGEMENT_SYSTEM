@@ -11,6 +11,7 @@ import App from './App.jsx';
 import QRCodeGenerator from './QRCodeGenerator';
 import VerifyEmail from './VerifyEmail';
 import ReCAPTCHA from 'react-google-recaptcha';
+import QRScanner from './QRScanner.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -23,6 +24,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/app" element={<App />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/generate-qr" element={<QRCodeGenerator />} />
+        <Route path="/scan-qr" element={<QRScanner />} />
       </Routes>
     </Router>
   </StrictMode>

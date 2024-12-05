@@ -1,115 +1,35 @@
-/* Navbar container styles */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: black;
-}
-
-/* Navbar brand styles */
-.navbar-brand {
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  font-family: 'Lucida Sans', sans-serif;
-  position: relative;
-  right: 4.7%;
-}
-
-/* Center icons */
-.navbar-center {
-  display: flex;
-  gap: 20px; /* Space between icons */
-}
-
-/* Icons and labels */
-.navbar-item {
-  display: flex;
-  align-items: center;
-  text-decoration: none; /* Remove underline */
-  color: white;
-  font-size: 14px;
-}
-
-.navbar-item:hover {
-  color: #00bfff; /* Light blue hover effect */
-}
-
-.icon {
-  font-size: 20px; /* Adjusted icon size */
-  color: white;
-  margin-right: 5px;
-}
-
-.icon:hover {
-  color: #00bfff; /* Hover effect */
-}
-
-/* Logout button styles */
-.logout-button {
-  color: white;
-  background-color: #ff4c4c; /* Red background */
-  border: none;
-  padding: 5px 15px; /* Adjusted size */
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
- position: relative;
- left: 4.5%;
-  width: 7%;
-}
-
-.logout-button:hover {
-  background-color: #ff1f1f; /* Darker red hover effect */
-}
-
-
-
-/* Lab Cards grid layout */
 .lab-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  grid-template-columns: repeat(5, 1fr); /* 5 columns in a row */
   gap: 20px; /* Space between cards */
   padding: 2rem;
   margin-top: 50px; /* Space for navbar */
-  background-color: #d0e0f0;
+  background-color: #f0f4f8; /* Light background for the dashboard */
+  border-radius: 8px; /* Rounded corners for the grid */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for the grid */
 }
 
-/* Lab Cards responsive layout */
+/* Responsive layout for smaller screens */
+@media (max-width: 1200px) {
+  .lab-cards {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on medium screens */
+  }
+}
+
+@media (max-width: 992px) {
+  .lab-cards {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on smaller screens */
+  }
+}
+
 @media (max-width: 768px) {
   .lab-cards {
     grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
-    padding: 1rem;
-  }
-
-  .navbar-center {
-    gap: 20px; /* Reduce gap on smaller screens */
-  }
-
-  .icon {
-    font-size: 18px; /* Adjust icon size for smaller screens */
-  }
-
-  .logout-button {
-    font-size: 12px; /* Smaller logout button */
-    padding: 6px 12px;
   }
 }
 
 @media (max-width: 480px) {
   .lab-cards {
     grid-template-columns: 1fr; /* 1 column layout on mobile */
-    padding: 0.5rem;
-  }
-
-  .icon {
-    font-size: 16px; /* Smaller icon size on very small screens */
-  }
-
-  .logout-button {
-    font-size: 10px;
-    padding: 4px 10px;
   }
 }
