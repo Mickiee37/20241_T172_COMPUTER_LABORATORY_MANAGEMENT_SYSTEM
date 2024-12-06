@@ -16,7 +16,7 @@ const VerifyEmail = () => {
         const verifyEmail = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8000/api/users/verify-email?token=${emailToken}`,
+                    `http://192.168.100.4:8000/api/users/verify-email?token=${emailToken}`,
                     { method: 'GET' }
                 );
 

@@ -12,6 +12,7 @@ import QRCodeGenerator from './QRCodeGenerator';
 import VerifyEmail from './VerifyEmail';
 import ReCAPTCHA from 'react-google-recaptcha';
 import QRScanner from './QRScanner.jsx';
+import ResetPassword from "./ResetPassword";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/generate-qr" element={<QRCodeGenerator />} />
         <Route path="/scan-qr" element={<QRScanner />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </Router>
   </StrictMode>

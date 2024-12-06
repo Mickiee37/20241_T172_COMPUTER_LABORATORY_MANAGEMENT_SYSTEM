@@ -19,8 +19,8 @@ const QRScanner = () => {
 
     const handleQRSubmit = async (data = qrData) => {
         try {
-            console.log("Sending QR Data:", data); // Log the data being sent
-            const result = await axios.post('http://192.168.255.244:8000/api/qr-code/scan', { qrData: data });
+            console.log("Sending QR Data:", data);
+            const result = await axios.post('http://192.168.100.4:8000/api/qr-code/scan', { qrData: data });
             console.log("Response from Backend:", result.data); // Log the backend response
             setResponse(result.data);
             setMessage('QR code scanned and logged successfully!');
