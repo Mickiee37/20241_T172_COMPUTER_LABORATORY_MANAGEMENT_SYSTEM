@@ -31,7 +31,6 @@ router.post('/scan-instructor', async (req, res) => {
   
     try {
       const parsedData = JSON.parse(qrData);
-  
       const lab = await Lab.findOne({ labNumber });
       if (!lab || lab.status !== 'open') {
         return res.status(400).json({ message: 'Lab is not open or does not exist.' });
@@ -110,5 +109,22 @@ router.post('/generate-key', async (req, res) => {
       res.status(500).json({ message: 'Failed to generate lab key QR code.' });
     }
 });
+// Validate lab number
+router.get('/validate-lab/:labNumber', async (req, res) => {
+  const { labNumber } = req.params;
+  console.log('Lab Number:', labNumber);
 
+  try {
+      const lab = await Lab.findOne({ labNumber });
+      console.log('Query Result:', lab);
+
+      if (!lab) {
+          return res.status(404).json({ message: `Lab ${labNumber} not found.` });
+      }
+      res.json({ success: true, lab });
+  } catch (error) {
+      console.error('Error fetching lab:', error);
+      res.status(500).json({ message: 'Server error', error });
+  }
+});
 export default router;

@@ -10,6 +10,7 @@ import attendanceRoutes from './routes/attendanceRoutes.js'; // Import attendanc
 import labRoutes from './routes/labRoutes.js';
 import googleSheetRoutes from './routes/googleSheetRouter.js'; // Import Google Sheet route
 import { scanQRCode } from './controllers/qrController.js';
+import resetPasswordRoutes from './routes/resetPasswordRoutes.js';
 const app = express();
 
 dotenv.config();
@@ -31,7 +32,7 @@ const port = process.env.PORT || 8000;
 const corsOptions = {
   origin: [
     "http://localhost:3000",
-    "http://192.168.255.244:3000",
+    "http://192.168.100.4:3000",
   ],
 };
 app.use(cors(corsOptions));
@@ -45,11 +46,11 @@ app.use('/api/attendance', attendanceRoutes); // Register attendance route
 app.use('/api/labs', labRoutes);
 app.use('/api', googleSheetRoutes); // Register Google Sheet route
 app.get('/api/qr-code/scan', scanQRCode);
-
+app.use('/api/reset-password', resetPasswordRoutes);
 app.listen(port, '0.0.0.0', async () => {
   try {
     await connect(); // Connect to MongoDB
-    console.log(`Connected to MongoDB and server is running on http://192.168.255.244:${port}`);
+    console.log(`Connected to MongoDB and server is running on http://192.168.100.4:${port}`);
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
     process.exit(1); 

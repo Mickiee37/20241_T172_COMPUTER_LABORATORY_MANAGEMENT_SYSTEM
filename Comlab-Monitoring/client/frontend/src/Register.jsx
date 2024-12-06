@@ -67,7 +67,7 @@ const Register = () => {
     setErrors({});
 
     try {
-      const response = await fetch('http://localhost:8000/api/users/register', {
+      const response = await fetch('http://192.168.100.4:8000/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ const Register = () => {
         setMessage('Registration successful! Please check your email to verify your account.');
 
         // Generate the verification link (frontend route)
-        const verificationLink = `http://localhost:3000/verify-email?token=${data.token}`;
+        const verificationLink = `http://192.168.255.244:3000/verify-email?token=${data.token}`;
         console.log('Verification link:', verificationLink);
 
         // Redirect to login page after successful registration

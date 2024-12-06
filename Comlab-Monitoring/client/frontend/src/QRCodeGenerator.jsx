@@ -6,57 +6,67 @@ import html2canvas from 'html2canvas';
 import './QRCodeGenerator.css';
 
 const QRCodeGenerator = () => {
-  const [qrType, setQrType] = useState('instructor'); // 'instructor' or 'key'
-  const [inputValue, setInputValue] = useState(''); // Either instructor name or lab key
+  const [qrType, setQrType] = useState('instructor'); // 'instructor' or 'comlab'
+  const [inputValue, setInputValue] = useState(''); // Either instructor name or lab number
   const [qrData, setQrData] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const generateQRCode = async () => {
     if (!inputValue) {
-      setErrorMessage(`Please enter a ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number'}!`);
+      setErrorMessage(
+        `Please enter a ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number'}!`
+      );
       return;
     }
-
+  
     setLoading(true);
     setErrorMessage(null);
-
+    setQrData(''); // Clear previous QR code
+  
     try {
-      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-
-      if (qrType === 'instructor') {
-        // Generate QR code URL for the backend
-        const qrValue = `http://192.168.255.244:8000/api/qr-code/scan?name=${encodeURIComponent(
+      if (qrType === 'comlab') {
+        // Validate the lab number with the backend
+        const response = await axios.get(
+          `http://192.168.100.4:8000/api/labs/validate-lab/${inputValue}`
+        );
+  
+        if (response.status === 200) {
+          // Backend confirms the lab exists
+          const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+          const qrValue = `http://192.168.100.4:8000/api/comlab/open?labNumber=${encodeURIComponent(
+            inputValue
+          )}&timestamp=${encodeURIComponent(currentTime)}`;
+          console.log('Generated QR Code Data:', qrValue);
+          setQrData(qrValue); // Set the QR code value for rendering
+        }
+      } else if (qrType === 'instructor') {
+        const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+        const qrValue = `http://192.168.100.4:8000/api/qr-code/scan?name=${encodeURIComponent(
           inputValue
         )}&timeIn=${encodeURIComponent(currentTime)}`;
-
-        console.log('Generated QR Code Data:', qrValue); // Debug
-        setQrData(qrValue); // Set the QR data state for QRCode component
-      } else if (qrType === 'key') {
-        const qrValue = JSON.stringify({
-          type: 'labKey',
-          labNumber: inputValue,
-          generatedAt: currentTime,
-        });
-
-        console.log('Generated Lab Key QR Data:', qrValue); // Debug
-        setQrData(qrValue); // Set the QR data state for QRCode component
+        setQrData(qrValue);
       }
     } catch (error) {
-      console.error('Error generating QR code:', error);
-      setErrorMessage('Error generating QR code. Please try again.');
+      // Handle errors from the backend validation
+      if (error.response && error.response.status === 404) {
+        setErrorMessage(`Lab ${inputValue} does not exist.`);
+      } else {
+        setErrorMessage('Error generating QR code. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
-
+  
+  
   const downloadQRCode = () => {
     const qrCodeElement = document.getElementById('qr-code');
 
     html2canvas(qrCodeElement).then((canvas) => {
       const link = document.createElement('a');
       link.href = canvas.toDataURL();
-      link.download = `${qrType}-qr-code.png`;
+      link.download = `${qrType}-${inputValue}-qr-code.png`;
       link.click();
     });
   };
@@ -74,7 +84,7 @@ const QRCodeGenerator = () => {
             className="form-control"
           >
             <option value="instructor">Instructor</option>
-            <option value="key">Lab Key</option>
+            <option value="comlab">Comlab</option>
           </select>
         </div>
         <div className="form-group">
@@ -102,7 +112,7 @@ const QRCodeGenerator = () => {
         <button onClick={generateQRCode} className="btn btn-primary">
           Generate QR Code
         </button>
-        <button onClick={downloadQRCode} className="btn btn-success">
+        <button onClick={downloadQRCode} className="btn btn-success" disabled={!qrData}>
           Download QR Code
         </button>
       </div>
