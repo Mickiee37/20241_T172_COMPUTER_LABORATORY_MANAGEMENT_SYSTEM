@@ -2,7 +2,7 @@ import React from 'react';
 import QRCode from 'qrcode.react';
 
 const AdminQRGenerator = () => {
-  const labNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,]; // Assuming you have 8 labs
+  const labNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,]; 
 
   return (
     <div className="qr-generator-container">
