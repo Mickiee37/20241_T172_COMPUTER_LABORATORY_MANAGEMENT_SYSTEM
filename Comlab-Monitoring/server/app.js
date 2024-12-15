@@ -44,7 +44,7 @@ app.use('/api/users', userRoutes);  // User routes for registration and login
 app.use('/api/qr-code', qrCodeRoutes);  // Register QR code routes
 app.use('/api/attendance', attendanceRoutes); // Register attendance route
 app.use('/api/labs', labRoutes);
-app.use('/api', googleSheetRoutes); // Register Google Sheet route
+app.use('/api', googleSheetRoutes);
 app.get('/api/qr-code/scan', scanQRCode);
 app.use('/api/reset-password', resetPasswordRoutes);
 app.listen(port, '0.0.0.0', async () => {

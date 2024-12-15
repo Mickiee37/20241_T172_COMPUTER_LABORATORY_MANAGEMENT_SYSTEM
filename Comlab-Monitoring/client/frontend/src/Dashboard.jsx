@@ -38,7 +38,7 @@ const Dashboard = () => {
       if (!response.data || response.data.length === 0) {
         setError('No data found in Google Sheets.');
         setLoading(false);
-        return; // Early exit if no data
+        return; 
       }
 
       const sheetData = response.data;

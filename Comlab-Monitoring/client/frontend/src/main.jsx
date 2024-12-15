@@ -13,6 +13,7 @@ import VerifyEmail from './VerifyEmail';
 import ReCAPTCHA from 'react-google-recaptcha';
 import QRScanner from './QRScanner.jsx';
 import ResetPassword from "./ResetPassword";
+import InstructorDashboard from "./instructorDashboard.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -28,6 +29,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/generate-qr" element={<QRCodeGenerator />} />
         <Route path="/scan-qr" element={<QRScanner />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/InstructorDashboard" element={<InstructorDashboard />} />
       </Routes>
     </Router>
   </StrictMode>

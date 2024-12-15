@@ -4,21 +4,31 @@ import Key from '../models/key.js';
 import { google } from 'googleapis';
 import path from 'path';
 import fs from 'fs';
+import dns from 'dns';
+
+// Set Google DNS Resolver to avoid ENOTFOUND errors
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 // Constants for Google Sheets
-const SPREADSHEET_ID = '1p8Dw9nUbe7HElDqWExpqqpl7PC-VjbxTi8S4oof_MXk'; // Replace with your Google Sheet ID
-const RANGE = 'Sheet1!A:B'; // Ensure this matches the sheet name and range
+const SPREADSHEET_ID = '1p8Dw9nUbe7HElDqWExpqqpl7PC-VjbxTi8S4oof_MXk';
+const RANGE = 'Sheet1!A:B';
 
 // Path to your Google Service Account JSON file
-const credentialsPath = path.resolve('./comlab-monitoring-4ecec-33d6a77860a5.json');
-const credentials = JSON.parse(fs.readFileSync(credentialsPath));
+const credentialsPath = path.resolve('./comlab-monitoring-4ecec-6d89856406bc.json');
+const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
 
 // Configure Google Sheets API
 const auth = new google.auth.GoogleAuth({
-  credentials,
+  credentials: credentials,
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
-const sheets = google.sheets({ version: 'v4', auth });
+
+const sheets = google.sheets({
+  version: 'v4',
+  auth,
+  rootUrl: 'https://sheets.googleapis.com', // Ensure this is set explicitly
+});
+
 
 // Helper function to append data to Google Sheets
 const appendToGoogleSheet = async (spreadsheetId, range, values) => {
@@ -34,8 +44,8 @@ const appendToGoogleSheet = async (spreadsheetId, range, values) => {
     });
     console.log('Data appended successfully:', response.data);
   } catch (error) {
-    console.error('Error appending to Google Sheets:', error.response?.data || error);
-    throw error;
+    console.error('Error appending to Google Sheets:', error.message || error.response?.data);
+    throw new Error(`Google Sheets Error: ${error.message}`);
   }
 };
 
@@ -55,7 +65,8 @@ export const generateInstructorQR = async (req, res) => {
 
     res.json({ message: 'Instructor QR code generated', qrCode });
   } catch (error) {
-    res.status(500).json({ message: 'Error generating QR Code', error });
+    console.error('Error generating QR Code:', error.message);
+    res.status(500).json({ message: 'Error generating QR Code', error: error.message });
   }
 };
 
@@ -75,31 +86,29 @@ export const generateKeyQR = async (req, res) => {
 
     res.json({ message: 'Key QR code generated', qrCode });
   } catch (error) {
-    res.status(500).json({ message: 'Error generating QR Code', error });
+    console.error('Error generating QR Code:', error.message);
+    res.status(500).json({ message: 'Error generating QR Code', error: error.message });
   }
 };
 
 // Scan QR Code and Log to Google Sheets
 export const scanQRCode = async (req, res) => {
   try {
-    const { name, timeIn } = req.query; // Extract query parameters
+    const { name, timeIn } = req.query;
 
     if (!name || !timeIn) {
       return res.status(400).json({ message: 'Missing required fields: name or timeIn' });
     }
 
-    console.log('Received QR Data:', { name, timeIn }); // Debug log
+    console.log('Received QR Data:', { name, timeIn });
 
-    // Prepare the row to be added to the sheet
     const newRow = [name, timeIn];
-
-    // Append the new row to the Google Sheet using the helper function
     await appendToGoogleSheet(SPREADSHEET_ID, RANGE, newRow);
 
-    console.log('Data successfully logged to Google Sheets'); // Debug log
+    console.log('Data successfully logged to Google Sheets');
     res.status(200).json({ message: 'QR code scan logged successfully!' });
   } catch (error) {
-    console.error('Error logging to Google Sheets:', error);
-    res.status(500).json({ message: 'Error logging QR scan', error });
+    console.error('Error logging to Google Sheets:', error.message);
+    res.status(500).json({ message: 'Error logging QR scan', error: error.message });
   }
 };

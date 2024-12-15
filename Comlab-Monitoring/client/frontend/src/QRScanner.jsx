@@ -16,19 +16,25 @@ const QRScanner = () => {
             handleQRSubmit(queryQrData); // Trigger backend call
         }
     }, [searchParams]);
-
-    const handleQRSubmit = async (data = qrData) => {
+    const handleQRSubmit = async (data) => {
         try {
-            console.log("Sending QR Data:", data);
-            const result = await axios.post('http://192.168.100.4:8000/api/qr-code/scan', { qrData: data });
-            console.log("Response from Backend:", result.data); // Log the backend response
-            setResponse(result.data);
-            setMessage('QR code scanned and logged successfully!');
+          const parsedData = JSON.parse(data); // Parse QR Code data
+          if (parsedData.type === 'labKey') {
+            const response = await axios.post('http://192.168.100.4:8000/api/labs/scan-lab', {
+              qrData: data,
+            });
+      
+            setMessage(`Lab ${parsedData.labNumber} is now open!`);
+            console.log('Response:', response.data);
+          } else {
+            setMessage('Invalid QR Code type.');
+          }
         } catch (error) {
-            console.error('Error scanning QR code:', error);
-            setMessage('Failed to scan QR code.');
+          console.error('Error scanning QR code:', error);
+          setMessage('Failed to process QR code.');
         }
-    };
+      };      
+      
 
     return (
         <div>

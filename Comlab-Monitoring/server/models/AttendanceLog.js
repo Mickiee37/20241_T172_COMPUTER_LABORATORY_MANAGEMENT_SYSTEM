@@ -9,6 +9,4 @@ const AttendanceLogSchema = new mongoose.Schema({
   labNumber: { type: Number, required: true },
   isActive: { type: Boolean, default: true },
 });
-
-// Default export
 export default mongoose.model('AttendanceLog', AttendanceLogSchema);
