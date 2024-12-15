@@ -1,0 +1,71 @@
+.lab-card {
+  background-color: #ffffff; /* White background for better contrast */
+  border: 2px solid #007bff; /* Blue border around each card */
+  border-radius: 12px; /* Slightly larger border radius */
+  padding: 20px;
+  margin: 0; /* Remove margin to control spacing through grid */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Softer shadow for depth */
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
+}
+
+.lab-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+.lab-card h2 {
+  color: #333; /* Darker color for better readability */
+  font-size: 1.6rem; /* Slightly larger font size */
+  margin-bottom: 10px; /* Space below the title */
+}
+
+.lab-card h3 {
+  font-size: 1.3rem; /* Slightly larger font size */
+  color: #4CAF50; /* Green color for instructor name */
+  margin: 5px 0; /* Space above and below the instructor name */
+}
+
+.lab-card p {
+  font-size: 1rem;
+  color: #555; /* Medium gray for text */
+  margin: 5px 0; /* Space above and below the text */
+}
+
+.no-user {
+  color: #FF5722; /* Bright orange for availability message */
+  font-weight: bold;
+  font-size: 1.1rem; /* Slightly larger font size */
+}
+.comlab-container {
+  display: grid; /* Grid layout for clear rows and columns */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+  gap: 30px; /* Spacing between cards */
+  padding: 20px;
+  background-color: #f5f8fa; /* Light background to highlight separation */
+}
+
+.lab-card {
+  background-color: #ffffff;
+  border: 2px solid #007bff; /* Blue border */
+  border-radius: 12px; /* Rounded corners */
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lab-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Lift effect */
+}
+
+.no-user {
+  color: #FF5722; /* Orange color for "available" message */
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+h2, h3, p {
+  margin: 10px 0; /* Uniform spacing for text */
+}
