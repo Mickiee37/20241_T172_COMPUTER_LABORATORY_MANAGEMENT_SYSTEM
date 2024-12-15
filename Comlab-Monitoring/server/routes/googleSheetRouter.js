@@ -1,25 +1,38 @@
-import express from 'express';
 import { google } from 'googleapis';
 import path from 'path';
 import fs from 'fs';
 
-// Load service account key
+// Path to service account JSON
 const __dirname = path.resolve();
-const serviceAccountPath = path.join(__dirname, 'comlab-monitoring-4ecec-33d6a77860a5.json');
-const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+const credentialsPath = path.join(
+  __dirname,
+  'comlab-monitoring-4ecec-6d89856406bc.json' // Ensure this file exists at this path
+);
 
-// Set up Google Sheets API
+// Load credentials safely
+let credentials;
+try {
+  credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+} catch (error) {
+  console.error('Failed to load Google service account credentials:', error.message);
+  process.exit(1); // Exit if credentials file cannot be loaded
+}
+
+// Configure Google Sheets API
 const auth = new google.auth.GoogleAuth({
-  credentials: serviceAccount,
-  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+  credentials: credentials,
+  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
+// Initialize Google Sheets API
 const sheets = google.sheets({ version: 'v4', auth });
 
 // Spreadsheet details
 const SPREADSHEET_ID = '1p8Dw9nUbe7HElDqWExpqqpl7PC-VjbxTi8S4oof_MXk';
 const RANGE = 'Sheet1!A:C';
 
+// Express Router Setup
+import express from 'express';
 const router = express.Router();
 
 router.get('/google-sheet-data', async (req, res) => {
@@ -30,25 +43,18 @@ router.get('/google-sheet-data', async (req, res) => {
     });
 
     const rows = response.data.values || [];
-    console.log('Raw Google Sheets Data:', rows); // Log the raw data fetched from Sheets
+    const data = rows.map((row, index) => ({
+      labNumber: index + 1,
+      instructorName: row[0] || 'N/A',
+      date: (row[1] || '').split(' ')[0] || null,
+      timeIn: (row[1] || '').split(' ')[1] || null,
+    }));
 
-    const data = rows.map((row, index) => {
-      const [date, time] = (row[1] || '').split(' ');
-      return {
-        labNumber: index + 1,
-        instructorName: row[0] || 'N/A',
-        date: date || null,
-        timeIn: time || null,
-      };
-    });
-
-    console.log('Processed Data:', data);
     res.json(data);
   } catch (error) {
-    console.error('Error fetching Google Sheets data:', error);
+    console.error('Error fetching Google Sheets data:', error.message);
     res.status(500).send('Error fetching data');
   }
 });
-
 
 export default router;

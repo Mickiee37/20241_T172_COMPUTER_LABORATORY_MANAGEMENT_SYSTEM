@@ -1,5 +1,6 @@
 import express from 'express';
 import Lab from '../models/Lab.js'; // Your Lab model
+import mongoose from 'mongoose';
 import { notifyDashboard } from '../webSocket/websocket.js'; // WebSocket notification if required
 
 const router = express.Router();
@@ -53,78 +54,83 @@ router.post('/scan-instructor', async (req, res) => {
 
 // Open Lab by scanning Lab QR Code
 router.post('/scan-lab', async (req, res) => {
-    const { qrData } = req.body;
-  
-    try {
-      const parsedData = JSON.parse(qrData);
-      if (parsedData.type !== 'labKey') {
-        return res.status(400).json({ message: 'Invalid QR Code type' });
-      }
-  
-      const lab = await Lab.findOne({ labNumber: parsedData.labNumber });
-      if (!lab) {
-        return res.status(404).json({ message: 'Lab not found' });
-      }
-  
-      lab.status = 'open';
-      await lab.save();
-  
-      // Notify the dashboard (WebSocket)
-      notifyDashboard({
-        type: 'labStatus',
-        labNumber: lab.labNumber,
-        status: 'open',
-      });
-  
-      res.json({ message: `Lab ${lab.labNumber} is now open.` });
-    } catch (error) {
-      console.error('Error processing lab QR scan:', error);
-      res.status(500).json({ message: 'Failed to process QR code for lab.', error });
-    }
-});
+  const { qrData } = req.body;
 
+  try {
+    const parsedData = JSON.parse(qrData);
+
+    if (parsedData.type !== 'labKey') {
+      return res.status(400).json({ message: 'Invalid QR Code type.' });
+    }
+
+    const lab = await Lab.findOne({ labNumber: parsedData.labNumber });
+    if (!lab) return res.status(404).json({ message: `Lab ${parsedData.labNumber} not found.` });
+
+    // Mark the lab as open
+    lab.status = 'open';
+    await lab.save();
+
+    res.json({ message: `Lab ${parsedData.labNumber} is now open.`, lab });
+  } catch (error) {
+    console.error('Error scanning lab QR code:', error);
+    res.status(500).json({ message: 'Failed to process QR code for lab.' });
+  }
+});
 // Generate Lab Key QR Code (Admin function)
 router.post('/generate-key', async (req, res) => {
-    const { labNumber, qrValue } = req.body;
-  
-    if (!labNumber || !qrValue) {
-      return res.status(400).json({ message: 'Missing labNumber or qrValue in the request body.' });
+  const { labNumber } = req.body;
+
+  try {
+    const lab = await Lab.findOne({ labNumber });
+    if (!lab) {
+      return res.status(404).json({ message: `Lab ${labNumber} does not exist.` });
     }
-  
-    try {
-      let lab = await Lab.findOne({ labNumber });
-  
-      if (!lab) {
-        // If the lab doesn't exist, create it
-        lab = new Lab({ labNumber, qrValue, status: 'closed', instructor: null });
-      } else {
-        // Update existing lab with a new QR value
-        lab.qrValue = qrValue;
-      }
-  
-      await lab.save();
-      res.status(201).json({ message: 'Lab key QR code generated and saved.', lab });
-    } catch (error) {
-      console.error('Error generating lab key QR code:', error); // Log the detailed error
-      res.status(500).json({ message: 'Failed to generate lab key QR code.' });
-    }
+
+    // Generate QR Code Payload
+    const qrPayload = JSON.stringify({
+      type: 'labKey',
+      labNumber: labNumber,
+      timestamp: new Date().toISOString(),
+    });
+
+    res.status(200).json({
+      message: `QR code for Lab ${labNumber} generated successfully.`,
+      qrData: qrPayload,
+    });
+  } catch (error) {
+    console.error('Error generating QR code:', error);
+    res.status(500).json({ message: 'Error generating QR code.' });
+  }
 });
+
 // Validate lab number
 router.get('/validate-lab/:labNumber', async (req, res) => {
   const { labNumber } = req.params;
-  console.log('Lab Number:', labNumber);
 
   try {
-      const lab = await Lab.findOne({ labNumber });
-      console.log('Query Result:', lab);
+    console.log('Received Lab Number:', labNumber);
 
-      if (!lab) {
-          return res.status(404).json({ message: `Lab ${labNumber} not found.` });
-      }
-      res.json({ success: true, lab });
+    // Clean and prepare the lab number
+    const cleanLabNumber = labNumber.replace(/Comlab\s*/i, '').trim();
+    console.log('Cleaned Lab Number:', cleanLabNumber);
+
+    // Explicitly apply collation to Mongoose query
+    const lab = await Lab.findOne(
+      { labNumber: cleanLabNumber },
+      null, // No projection
+      { collation: { locale: 'en', strength: 2 } } // Case-insensitive matching
+    );
+
+    console.log('MongoDB Query Result:', lab);
+
+    if (!lab) {
+      return res.status(404).json({ message: `Lab ${cleanLabNumber} does not exist.` });
+    }
+
+    res.json({ success: true, lab });
   } catch (error) {
-      console.error('Error fetching lab:', error);
-      res.status(500).json({ message: 'Server error', error });
+    console.error('Error validating lab:', error);
+    res.status(500).json({ message: 'Internal server error while validating lab.' });
   }
 });
 export default router;

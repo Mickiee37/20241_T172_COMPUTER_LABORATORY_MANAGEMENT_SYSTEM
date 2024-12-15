@@ -9,13 +9,11 @@ import './Login.css';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
-  const [isOtpSent, setIsOtpSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [recaptchaValue, setRecaptchaValue] = useState('');
+  const [loginAttempts, setLoginAttempts] = useState(0); // Track login attempts
   const navigate = useNavigate();
 
   // Google Sign-In Handler
@@ -45,70 +43,20 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL || 'http://192.168.100.4:8000'}/api/users/check-user`, {
+      const response = await axios.post('http://192.168.100.4:8000/api/users/check-user', {
         email,
         password,
-        recaptchaValue
+        recaptchaValue,
       });
-
       if (response.status === 200) {
+        setError('');
+        setLoginAttempts(0); // Reset login attempts on success
         navigate('/dashboard');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
+      setLoginAttempts((prev) => prev + 1); // Increment login attempts
       console.error('Login error:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Send OTP for Login
-  const sendOtp = async () => {
-    if (!phoneNumber) {
-      setError('Please enter your phone number');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL || 'http://192.168.100.4:8000'}/send-otp`,
-        { phoneNumber }
-      );
-      if (response.data.success) {
-        setIsOtpSent(true);
-        setError('');
-      } else {
-        setError('Failed to send OTP. Please try again.');
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Error sending OTP');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Verify OTP
-  const verifyOtp = async () => {
-    if (!otp) {
-      setError('Please enter the OTP');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL || 'http://192.168.100.4:8000'}/verify-otp`,
-        { phoneNumber, otp }
-      );
-      if (response.data.success) {
-        alert('OTP verified successfully!');
-        navigate('/dashboard');
-      } else {
-        setError('Invalid OTP. Please try again.');
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Error verifying OTP');
     } finally {
       setIsLoading(false);
     }
@@ -175,13 +123,17 @@ const Login = () => {
         {/* Error Messages */}
         {error && <p className="error-message">{error}</p>}
 
+        {/* Reset Password Link (only after 3 failed attempts) */}
+        {loginAttempts >= 3 && (
+          <p className="reset-password-link">
+            <a href="/reset-password">Reset your password here</a>
+          </p>
+        )}
+
         {/* Links */}
         <div className="login-links">
           <p className="register-link">
             Don't have an account? <a href="/register">Register</a>
-          </p>
-          <p className="reset-password-link">
-            <a href="/reset-password">Reset your password here</a>
           </p>
         </div>
       </div>

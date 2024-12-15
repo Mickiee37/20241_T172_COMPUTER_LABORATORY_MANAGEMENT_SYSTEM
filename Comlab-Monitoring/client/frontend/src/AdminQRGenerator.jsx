@@ -11,7 +11,7 @@ const AdminQRGenerator = () => {
         {labNumbers.map((labNumber) => (
           <div key={labNumber} className="qr-code-item">
             <h3>Comlab {labNumber}</h3>
-            <QRCode value={`http://192.168.255.244:8000/dashboard?lab=${labNumber}`} size={256} />
+            <QRCode value={`http://192.168.194.244:8000/dashboard?lab=${labNumber}`} size={256} />
           </div>
         ))}
       </div>

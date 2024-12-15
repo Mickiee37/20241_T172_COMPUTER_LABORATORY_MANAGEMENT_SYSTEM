@@ -37,3 +37,35 @@
   font-weight: bold;
   font-size: 1.1rem; /* Slightly larger font size */
 }
+.comlab-container {
+  display: grid; /* Grid layout for clear rows and columns */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+  gap: 30px; /* Spacing between cards */
+  padding: 20px;
+  background-color: #f5f8fa; /* Light background to highlight separation */
+}
+
+.lab-card {
+  background-color: #ffffff;
+  border: 2px solid #007bff; /* Blue border */
+  border-radius: 12px; /* Rounded corners */
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lab-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Lift effect */
+}
+
+.no-user {
+  color: #FF5722; /* Orange color for "available" message */
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+h2, h3, p {
+  margin: 10px 0; /* Uniform spacing for text */
+}

@@ -10,6 +10,8 @@ const UserType = () => {
     setSelectedUserType(type);
     if (type === 'Admin') {
       navigate('/Login'); // Redirect to /Login when "Admin" is selected
+    } else if (type === "Instructor") {
+      navigate("/InstructorDashboard");
     }
   };
 

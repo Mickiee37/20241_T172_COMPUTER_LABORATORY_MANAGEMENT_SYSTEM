@@ -7,69 +7,84 @@ import './QRCodeGenerator.css';
 
 const QRCodeGenerator = () => {
   const [qrType, setQrType] = useState('instructor'); // 'instructor' or 'comlab'
-  const [inputValue, setInputValue] = useState(''); // Either instructor name or lab number
-  const [qrData, setQrData] = useState('');
+  const [inputValue, setInputValue] = useState(''); // Instructor name or lab number
+  const [qrData, setQrData] = useState(''); // Holds the generated QR Code value
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const generateQRCode = async () => {
-    if (!inputValue) {
-      setErrorMessage(
-        `Please enter a ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number'}!`
-      );
-      return;
-    }
-  
-    setLoading(true);
-    setErrorMessage(null);
-    setQrData(''); // Clear previous QR code
-  
-    try {
-      if (qrType === 'comlab') {
-        // Validate the lab number with the backend
-        const response = await axios.get(
-          `http://192.168.100.4:8000/api/labs/validate-lab/${inputValue}`
-        );
-  
-        if (response.status === 200) {
-          // Backend confirms the lab exists
-          const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-          const qrValue = `http://192.168.100.4:8000/api/comlab/open?labNumber=${encodeURIComponent(
-            inputValue
-          )}&timestamp=${encodeURIComponent(currentTime)}`;
-          console.log('Generated QR Code Data:', qrValue);
-          setQrData(qrValue); // Set the QR code value for rendering
-        }
-      } else if (qrType === 'instructor') {
-        const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-        const qrValue = `http://192.168.100.4:8000/api/qr-code/scan?name=${encodeURIComponent(
-          inputValue
-        )}&timeIn=${encodeURIComponent(currentTime)}`;
-        setQrData(qrValue);
-      }
-    } catch (error) {
-      // Handle errors from the backend validation
-      if (error.response && error.response.status === 404) {
-        setErrorMessage(`Lab ${inputValue} does not exist.`);
-      } else {
-        setErrorMessage('Error generating QR code. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  
-  const downloadQRCode = () => {
-    const qrCodeElement = document.getElementById('qr-code');
+  const trimmedInput = inputValue.trim(); // Trim any extra whitespace
+  if (!trimmedInput || (qrType === 'comlab' && (isNaN(trimmedInput) || trimmedInput < 1 || trimmedInput > 10))) {
+    setErrorMessage(
+      `Please enter a valid ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number (1–10)'}!`
+    );
+    return;
+  }
 
-    html2canvas(qrCodeElement).then((canvas) => {
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL();
-      link.download = `${qrType}-${inputValue}-qr-code.png`;
-      link.click();
-    });
-  };
+  setLoading(true);
+  setErrorMessage(null);
+  setQrData(''); 
+
+  try {
+    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    if (qrType === 'comlab') {
+      // Backend API call to validate lab number
+      const response = await axios.get(
+        `http://192.168.100.4:8000/api/labs/validate-lab/${trimmedInput}`
+      );
+
+      if (response.status === 200) {
+        // Create QR payload for lab
+        const qrPayload = JSON.stringify({
+          type: 'labKey',
+          labNumber: trimmedInput,
+          timestamp: currentTime,
+        });
+
+        setQrData(qrPayload);
+        console.log('Generated Lab QR Code Payload:', qrPayload);
+      } else {
+        setErrorMessage(`Lab ${trimmedInput} does not exist.`);
+      }
+    } else if (qrType === 'instructor') {
+      // Create instructor QR URL
+      const qrValue = `http://192.168.100.4:8000/api/qr-code/scan?name=${encodeURIComponent(
+        trimmedInput
+      )}&timeIn=${encodeURIComponent(currentTime)}`;
+
+      setQrData(qrValue);
+      console.log('Generated Instructor QR Code:', qrValue);
+    }
+  } catch (error) {
+    console.error('Error generating QR code:', error.message);
+
+    if (error.response && error.response.status === 404) {
+      setErrorMessage(`Lab ${trimmedInput} does not exist.`);
+    } else {
+      setErrorMessage('Error generating QR code. Please try again.');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+const downloadQRCode = () => {
+  const qrCodeElement = document.getElementById('qr-code');
+
+  // Check if QR code exists before downloading
+  if (!qrCodeElement) {
+    setErrorMessage('No QR code to download.');
+    return;
+  }
+
+  // Capture the QR code element as an image and download
+  html2canvas(qrCodeElement).then((canvas) => {
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL();
+    link.download = `${qrType}-${inputValue.trim()}-qr-code.png`;
+    link.click();
+  });
+};
 
   return (
     <div className="container">
@@ -96,7 +111,7 @@ const QRCodeGenerator = () => {
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={`Enter ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number'}`}
+            placeholder={`Enter ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number (1–10)'}`}
             className="form-control"
           />
         </div>

@@ -1,47 +1,31 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import Lab from './models/Lab.js';
+import Lab from './models/Lab.js'; // Adjust the path to your Lab model
 
-dotenv.config();
+mongoose.connect('your-mongo-uri', { useNewUrlParser: true, useUnifiedTopology: true });
 
-const MONGO_URI = process.env.MONGODB;
+const labs = [
+  { labNumber: '1', labName: 'Comlab 1', status: 'closed' },
+  { labNumber: '2', labName: 'Comlab 2', status: 'closed' },
+  { labNumber: '3', labName: 'Comlab 3', status: 'closed' },
+  { labNumber: '4', labName: 'Comlab 4', status: 'closed' },
+  { labNumber: '5', labName: 'Comlab 5', status: 'closed' },
+  { labNumber: '6', labName: 'Comlab 6', status: 'closed' },
+  { labNumber: '7', labName: 'Comlab 7', status: 'closed' },
+  { labNumber: '8', labName: 'Comlab 8', status: 'closed' },
+  { labNumber: '9', labName: 'Comlab 9', status: 'closed' },
+  { labNumber: '10', labName: 'Comlab 10', status: 'closed' },
+];
 
-const allLabs = Array.from({ length: 10 }, (_, i) => ({
-  labNumber: (i + 1).toString(),
-  labName: `Comlab ${i + 1}`,
-  status: 'closed',
-  instructor: null,
-  qrValue: `dummyQrValue${i + 1}`,
-}));
-
-const seedLabs = async () => {
+const seedDB = async () => {
   try {
-    console.log('Connecting to MongoDB...');
-    await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('Connected to MongoDB');
-
-    console.log('Checking for existing labs...');
-    const existingLabs = await Lab.find({}, 'labNumber'); // Get existing lab numbers
-    const existingLabNumbers = existingLabs.map(lab => lab.labNumber);
-
-    console.log(`Existing labs: ${existingLabNumbers.join(', ')}`);
-
-    // Filter out labs that already exist
-    const newLabs = allLabs.filter(lab => !existingLabNumbers.includes(lab.labNumber));
-
-    if (newLabs.length === 0) {
-      console.log('No new labs to insert. All labs already exist.');
-    } else {
-      console.log(`Inserting new labs: ${newLabs.map(lab => lab.labNumber).join(', ')}`);
-      const insertedLabs = await Lab.insertMany(newLabs);
-      console.log(`Labs inserted successfully: ${insertedLabs.length}`);
-    }
+    await Lab.deleteMany({}); // Clear the existing labs
+    await Lab.insertMany(labs); // Insert new labs
+    console.log('Database successfully seeded!');
   } catch (error) {
-    console.error('Error during seeding:', error);
+    console.error('Error seeding database:', error.message);
   } finally {
-    mongoose.connection.close();
-    console.log('Database connection closed');
+    mongoose.connection.close(); // Close the database connection
   }
 };
 
-seedLabs();
+seedDB();
