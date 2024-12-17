@@ -1,82 +1,107 @@
-/* QR Code container styling */
+/* Main QR Code container styling */
 .box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    width: 100%;
-    max-width: 400px; /* Set a max width to prevent it from becoming too wide */
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-    margin: 0 auto;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px; /* Prevent excessive width */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  margin: 0 auto; /* Center horizontally */
+  text-align: center;
+  overflow: hidden; /* Prevent content overflow */
+}
+
+/* Input field styling */
+.form-control {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+/* Paragraph and error message styling */
+p {
+  font-size: 16px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+/* QR code display container */
+.qr-code-container {
+  width: 100%;
+  max-width: 250px; /* Prevent the QR code from becoming too large */
+  padding: 10px;
+  background-color: #f5f5f5;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Ensure no content overflow */
+}
+
+/* Buttons Styling */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+/* Ensure no horizontal overflow */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrollbars */
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+  .box {
+    padding: 15px;
+    max-width: 90%; /* Make it responsive */
   }
-  
-  /* Input field styling */
-  .form-control {
-    width: 100%;
-    margin-top: 70px;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+
+  .qr-code-container {
+    max-width: 200px;
   }
-  
-  /* Time in display */
-  p {
-    font-size: 16px;
-    margin: 10px 0;
-    text-align: center;
-  }
-  
-  /* QR code display inside a box */
-  #qr-code {
-    padding: 20px;
-    background-color: #f5f5f5;
-    border: 2px solid #ccc;
-    border-radius: 12px;
-    margin: 10px 0;
-    width: 100%; /* Ensures it takes the full width of the container */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  #qr-code p {
-    margin: 10px 0;
-    font-size: 14px;
-    color: #555;
-  }
-  
-  /* Buttons Styling */
+
   button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 14px;
+    padding: 10px;
   }
-  
-  .btn-primary {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  
-  .btn-success {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .btn-success:hover {
-    background-color: #218838;
-  }
-  
+}
