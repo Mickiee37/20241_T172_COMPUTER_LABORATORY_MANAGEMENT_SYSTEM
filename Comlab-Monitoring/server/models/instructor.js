@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-// Define the schema for instructors
 const instructorSchema = new Schema(
   {
     id: {
       type: String,
       required: true,
-      unique: true,
+      unique: true, // Ensure id is unique
     },
     name: {
       type: String,
@@ -23,18 +22,17 @@ const instructorSchema = new Schema(
       unique: true,
     },
     timeIn: {
-      type: Date, // Stores the time when the instructor enters
+      type: Date,
     },
     timeOut: {
-      type: Date, // Stores the time when the instructor exits
+      type: Date,
     },
   },
   {
-    timestamps: true, // For tracking when the document was created or updated
+    timestamps: true,
   }
 );
 
-// Check if the model is already compiled before compiling it again
 const Instructor =
   mongoose.models.Instructor || mongoose.model("Instructor", instructorSchema);
 
