@@ -3,7 +3,7 @@ import LabCard from './LabCard';
 import './ComlabContainer.css';
 
 const labData = [
-  { labNumber: 1, currentUser: { name: 'Unknown Instructor', date: '2024-12-11', timeIn: '00:18:05', scannedBy: 'Unknown Scanner' } },
+  { labNumber: 1, currentUser: null },
   { labNumber: 2, currentUser: null },
   { labNumber: 3, currentUser: null },
   { labNumber: 4, currentUser: null },

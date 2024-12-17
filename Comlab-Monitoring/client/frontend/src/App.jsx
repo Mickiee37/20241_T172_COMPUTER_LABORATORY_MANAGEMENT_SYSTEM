@@ -33,7 +33,7 @@ const App = () => {
 
   const fetchInstructors = async () => {
     try {
-      const response = await fetch("http://192.168.100.4:8000/api/instructor/");
+      const response = await fetch("http://192.168.194.244:8000/api/instructor/");
       if (!response.ok) throw new Error("No internet connection");
       const data = await response.json();
       setInstructors(data);
@@ -78,7 +78,7 @@ const App = () => {
       return;
     }
     try {
-      const response = await fetch("http://192.168.100.4:8000/api/instructor/", {
+      const response = await fetch("http://192.168.194.244:8000/api/instructor/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newInstructor)
@@ -103,7 +103,7 @@ const App = () => {
       return;
     }
     try {
-      const response = await fetch(`http://192.168.100.4:8000/api/instructor/${newInstructorPut.id}`, {
+      const response = await fetch(`http://192.168.194.244:8000/api/instructor/${newInstructorPut.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newInstructorPut)
@@ -123,7 +123,7 @@ const App = () => {
   const handleDeleteSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://192.168.100.4:8000/api/instructor/${deleteId}`, {
+      const response = await fetch(`http://192.168.194.244:8000/api/instructor/${deleteId}`, {
         method: 'DELETE'
       });
       if (!response.ok) throw new Error('Failed to delete instructor');

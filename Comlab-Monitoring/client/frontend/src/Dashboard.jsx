@@ -32,7 +32,7 @@ const Dashboard = () => {
     setError(null); // Clear any previous errors
 
     try {
-      const response = await axios.get('http://192.168.100.4:8000/api/google-sheet-data');
+      const response = await axios.get('http://192.168.194.244:8000/api/google-sheet-data');
 
       // Handle case where no data is returned
       if (!response.data || response.data.length === 0) {
