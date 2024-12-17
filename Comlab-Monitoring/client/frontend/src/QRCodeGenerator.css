@@ -12,6 +12,7 @@
   margin: 0 auto; /* Center horizontally */
   text-align: center;
   overflow: hidden; /* Prevent content overflow */
+ margin-top: 8%;
 }
 
 /* Input field styling */
