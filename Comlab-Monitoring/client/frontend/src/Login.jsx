@@ -35,33 +35,43 @@ const Login = () => {
   // Email/Password Login Handler
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     if (!recaptchaValue) {
       setError("Please complete the reCAPTCHA");
       return;
     }
-
+  
     setIsLoading(true);
     try {
-      const response = await axios.post('http://192.168.100.4:8000/api/users/check-user', {
-        email,
-        password,
+      // Verify reCAPTCHA with backend
+      const recaptchaResponse = await axios.post('http://192.168.194.244:8000/api/verify-recaptcha', {
         recaptchaValue,
       });
+  
+      if (!recaptchaResponse.data.success) {
+        setError("reCAPTCHA verification failed.");
+        return;
+      }
+  
+      // Proceed with login
+      const response = await axios.post('http://192.168.194.244:8000/api/users/check-user', {
+        email,
+        password,
+      });
+  
       if (response.status === 200) {
         setError('');
-        setLoginAttempts(0); // Reset login attempts on success
+        setLoginAttempts(0);
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-      setLoginAttempts((prev) => prev + 1); // Increment login attempts
-      console.error('Login error:', err);
+      setError('Invalid email or password. Please try again.');
+      setLoginAttempts((prev) => prev + 1);
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   return (
     <div className="login-container">
       <div className="login-image">

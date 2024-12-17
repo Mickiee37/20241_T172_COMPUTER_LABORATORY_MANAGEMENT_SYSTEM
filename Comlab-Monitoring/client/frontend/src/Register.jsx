@@ -57,7 +57,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        "http://192.168.100.4:8000/api/users/register", // Add 'users' to match the backend route
+        "http://192.168.194.244:8000/api/users/register", // Add 'users' to match the backend route
         {
           email: formData.email,
           phoneNumber: formData.phoneNumber,

@@ -24,7 +24,7 @@ const InstructorDashboard = () => {
     const fetchGoogleSheetData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://192.168.100.4:8000/api/google-sheet-data");
+        const response = await axios.get("http://192.168.194.244:8000/api/google-sheet-data");
         const sheetData = response.data;
 
         setLabData((prevData) =>

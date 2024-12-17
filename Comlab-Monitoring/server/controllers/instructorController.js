@@ -6,47 +6,40 @@ const getInstructors = async (req, res) => {
     try {
         const instructors = await Instructor.find();
         console.log(instructors);
-        res.status(200).json(instructors); // Send data in JSON format
+        res.status(200).json(instructors);
     } catch (error) {
         console.error("Error fetching instructors:", error);
         res.status(500).json({ message: "Failed to fetch instructors" });
     }
 };
 
-// Get a specific instructor by ID
 const getInstructor = async (req, res) => {
     try {
-        const instructor = await Instructor.findById(req.params.id);
-        console.log(instructor);
-        if (!instructor) {
-            return res.status(404).json({ message: "Instructor not found" });
-        }
-        res.status(200).json(instructor); // Send the instructor data
+      const instructor = await Instructor.findOne({ id: req.params.id });
+      if (!instructor) {
+        return res.status(404).json({ message: 'Instructor does not exist.' });
+      }
+      res.status(200).json(instructor);
     } catch (error) {
-        console.error("Error fetching instructor:", error);
-        res.status(500).json({ message: "Failed to fetch instructor" });
+      console.error('Error fetching instructor:', error.message);
+      res.status(500).json({ message: 'Server error while fetching instructor.' });
     }
-};
-
+  };
 // Add a new instructor
 const postInstructor = async (req, res) => {
     try {
-        // Validate input data (example for required fields)
+        
         const { id, name, lastname, email } = req.body;
         if (!id, !name || !lastname || !email) {
             return res.status(400).json({ message: "Missing required fields: name, lastname, and email" });
         }
-
-        // Check for existing instructor by email
         const existingInstructor = await Instructor.findOne({ email });
         if (existingInstructor) {
             return res.status(400).json({ message: "Instructor with this email already exists" });
         }
-
-        // Create and save the new instructor
         const instructor = new Instructor(req.body);
         const savedInstructor = await instructor.save();
-        res.status(201).json(savedInstructor); // Created successfully
+        res.status(201).json(savedInstructor); 
     } catch (error) {
         console.error("Error adding instructor:", error);
         res.status(500).json({ message: "Failed to add instructor" });
@@ -55,9 +48,7 @@ const postInstructor = async (req, res) => {
 
 const deleteInstructor = async (req, res) => {
     try {
-        const { id } = req.params; // Custom ID from URL
-
-        // Find and delete by custom ID field
+        const { id } = req.params; 
         const deletedInstructor = await Instructor.findOneAndDelete({ id });
 
         if (!deletedInstructor) {
@@ -73,14 +64,13 @@ const deleteInstructor = async (req, res) => {
 
 const updateInstructor = async (req, res) => {
     try {
-        const { id } = req.params; // Custom ID from URL
-        const updateData = req.body; // Updated instructor data from the request body
+        const { id } = req.params; 
+        const updateData = req.body; 
 
-        // Find and update by custom ID field
         const updatedInstructor = await Instructor.findOneAndUpdate(
-            { id }, // Query using the custom ID field
-            updateData, // New data to update
-            { new: true } // Return the updated document
+            { id }, 
+            updateData, 
+            { new: true }
         );
 
         if (!updatedInstructor) {

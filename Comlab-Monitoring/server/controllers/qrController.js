@@ -14,7 +14,7 @@ const SPREADSHEET_ID = '1p8Dw9nUbe7HElDqWExpqqpl7PC-VjbxTi8S4oof_MXk';
 const RANGE = 'Sheet1!A:B';
 
 // Path to your Google Service Account JSON file
-const credentialsPath = path.resolve('./comlab-monitoring-4ecec-6d89856406bc.json');
+const credentialsPath = path.resolve('./comlab-monitoring-4ecec-a1e7074749a3.json');
 const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
 
 // Configure Google Sheets API

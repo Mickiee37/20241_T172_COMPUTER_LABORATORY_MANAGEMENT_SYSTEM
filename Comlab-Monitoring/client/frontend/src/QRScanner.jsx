@@ -20,7 +20,7 @@ const QRScanner = () => {
         try {
           const parsedData = JSON.parse(data); // Parse QR Code data
           if (parsedData.type === 'labKey') {
-            const response = await axios.post('http://192.168.100.4:8000/api/labs/scan-lab', {
+            const response = await axios.post('http://192.168.194.244:8000/api/labs/scan-lab', {
               qrData: data,
             });
       

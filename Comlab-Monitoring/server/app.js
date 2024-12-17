@@ -32,7 +32,7 @@ const port = process.env.PORT || 8000;
 const corsOptions = {
   origin: [
     "http://localhost:3000",
-    "http://192.168.100.4:3000",
+    "http://192.168.194.244:3000",
   ],
 };
 app.use(cors(corsOptions));
@@ -50,7 +50,7 @@ app.use('/api/reset-password', resetPasswordRoutes);
 app.listen(port, '0.0.0.0', async () => {
   try {
     await connect(); // Connect to MongoDB
-    console.log(`Connected to MongoDB and server is running on http://192.168.100.4:${port}`);
+    console.log(`Connected to MongoDB and server is running on http://192.168.194.244:${port}`);
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
     process.exit(1); 

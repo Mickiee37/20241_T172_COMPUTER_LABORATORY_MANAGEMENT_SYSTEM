@@ -4,7 +4,7 @@ import axios from "axios";
 import "./ResetPassword.css"; // Link to the CSS file
 
 const axiosInstance = axios.create({
-  baseURL: "http://192.168.100.4:8000",
+  baseURL: "http://192.168.194.244:8000",
 });
 
 const ResetPassword = () => {

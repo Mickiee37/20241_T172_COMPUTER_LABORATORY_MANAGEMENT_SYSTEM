@@ -4,6 +4,7 @@ import User from '../models/User.js';
 import { sendVerificationEmail } from '../Services/emailService.js'; // Import email service
 import { v4 as uuidv4 } from 'uuid';
 import winston from 'winston'; // Logging tool
+import { verifyAuthToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -144,5 +145,20 @@ router.post('/check-user', async (req, res) => {
     res.status(500).json({ message: 'Server error during login.' });
   }
 });
-
+router.get('/profile', verifyAuthToken, async (req, res) => {
+  try {
+    // Access decoded user info
+    const user = req.user; // Decoded token attached to req.user
+    res.status(200).json({
+      message: 'Profile fetched successfully',
+      user: {
+        uid: user.uid,
+        email: user.email,
+        name: user.name || 'N/A',
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error fetching profile', error: error.message });
+  }
+});
 export default router;
