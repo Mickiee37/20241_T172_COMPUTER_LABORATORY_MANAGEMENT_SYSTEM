@@ -7,92 +7,84 @@ import './QRCodeGenerator.css';
 
 const QRCodeGenerator = () => {
   const [qrType, setQrType] = useState('instructor'); // 'instructor' or 'comlab'
-  const [inputValue, setInputValue] = useState(''); // Input for Instructor ID or Lab Number
-  const [qrData, setQrData] = useState(''); // QR Code content
+  const [inputValue, setInputValue] = useState(''); // Instructor name or lab number
+  const [qrData, setQrData] = useState(''); // Holds the generated QR Code value
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const generateQRCode = async () => {
-    const trimmedInput = inputValue.trim();
-    if (!trimmedInput || (qrType === 'comlab' && (isNaN(trimmedInput) || trimmedInput < 1 || trimmedInput > 10))) {
-      setErrorMessage(
-        `Please enter a valid ${qrType === 'instructor' ? 'Instructor ID' : 'Lab Number (1–10)'}!`
+  const trimmedInput = inputValue.trim(); // Trim any extra whitespace
+  if (!trimmedInput || (qrType === 'comlab' && (isNaN(trimmedInput) || trimmedInput < 1 || trimmedInput > 10))) {
+    setErrorMessage(
+      `Please enter a valid ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number (1–10)'}!`
+    );
+    return;
+  }
+
+  setLoading(true);
+  setErrorMessage(null);
+  setQrData(''); 
+
+  try {
+    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    if (qrType === 'comlab') {
+      // Backend API call to validate lab number
+      const response = await axios.get(
+        `http://192.168.194.244:8000/api/labs/validate-lab/${trimmedInput}`
       );
-      return;
-    }
 
-    setLoading(true);
-    setErrorMessage(null);
-    setQrData('');
+      if (response.status === 200) {
+        // Create QR payload for lab
+        const qrPayload = JSON.stringify({
+          type: 'labKey',
+          labNumber: trimmedInput,
+          timestamp: currentTime,
+        });
 
-    try {
-      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-
-      if (qrType === 'instructor') {
-        // Validate Instructor in the Database
-        const response = await axios.get(`http://192.168.194.244:8000/api/instructor/${trimmedInput}`);
-
-        if (response.status === 200 && response.data) {
-          const instructor = response.data;
-
-          // Create QR payload for instructor
-          const qrPayload = JSON.stringify({
-            type: 'instructor',
-            instructorId: instructor.id,
-            name: instructor.name,
-            lastname: instructor.lastname,
-            email: instructor.email,
-            timestamp: currentTime,
-          });
-
-          setQrData(qrPayload);
-          console.log('Generated Instructor QR Code Payload:', qrPayload);
-        }
-      } else if (qrType === 'comlab') {
-        // Validate Lab Number
-        const response = await axios.get(`http://192.168.194.244:8000/api/labs/validate-lab/${trimmedInput}`);
-
-        if (response.status === 200) {
-          const qrPayload = JSON.stringify({
-            type: 'labKey',
-            labNumber: trimmedInput,
-            timestamp: currentTime,
-          });
-          setQrData(qrPayload);
-          console.log('Generated Lab QR Code Payload:', qrPayload);
-        } else {
-          setErrorMessage(`Lab ${trimmedInput} does not exist.`);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching instructor or lab:', error.response?.data?.message || error.message);
-
-      // Handle specific error message
-      if (error.response?.status === 404) {
-        setErrorMessage('Instructor does not exist.');
+        setQrData(qrPayload);
+        console.log('Generated Lab QR Code Payload:', qrPayload);
       } else {
-        setErrorMessage('An error occurred. Please try again.');
+        setErrorMessage(`Lab ${trimmedInput} does not exist.`);
       }
-    } finally {
-      setLoading(false);
+    } else if (qrType === 'instructor') {
+      // Create instructor QR URL
+      const qrValue = `http://192.168.194.244:8000/api/qr-code/scan?name=${encodeURIComponent(
+        trimmedInput
+      )}&timeIn=${encodeURIComponent(currentTime)}`;
+
+      setQrData(qrValue);
+      console.log('Generated Instructor QR Code:', qrValue);
     }
-  };
+  } catch (error) {
+    console.error('Error generating QR code:', error.message);
 
-  const downloadQRCode = () => {
-    const qrCodeElement = document.getElementById('qr-code');
-
-    if (!qrCodeElement) {
-      setErrorMessage('No QR code to download.');
-      return;
+    if (error.response && error.response.status === 404) {
+      setErrorMessage(`Lab ${trimmedInput} does not exist.`);
+    } else {
+      setErrorMessage('Error generating QR code. Please try again.');
     }
+  } finally {
+    setLoading(false);
+  }
+};
+const downloadQRCode = () => {
+  const qrCodeElement = document.getElementById('qr-code');
 
-    html2canvas(qrCodeElement).then((canvas) => {
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL();
-      link.download = `${qrType}-${inputValue.trim()}-qr-code.png`;
-      link.click();
-    });
-  };
+  // Check if QR code exists before downloading
+  if (!qrCodeElement) {
+    setErrorMessage('No QR code to download.');
+    return;
+  }
+
+  // Capture the QR code element as an image and download
+  html2canvas(qrCodeElement).then((canvas) => {
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL();
+    link.download = `${qrType}-${inputValue.trim()}-qr-code.png`;
+    link.click();
+  });
+};
 
   return (
     <div className="container">
@@ -112,20 +104,20 @@ const QRCodeGenerator = () => {
         </div>
         <div className="form-group">
           <label htmlFor="inputValue">
-            Enter {qrType === 'instructor' ? 'Instructor ID' : 'Lab Number'}:
+            Enter {qrType === 'instructor' ? 'Instructor Name' : 'Lab Number'}:
           </label>
           <input
             id="inputValue"
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={`Enter ${qrType === 'instructor' ? 'Instructor ID' : 'Lab Number (1–10)'}`}
+            placeholder={`Enter ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number (1–10)'}`}
             className="form-control"
           />
         </div>
         <p>Time: {moment().format('YYYY-MM-DD HH:mm:ss')}</p>
         {errorMessage && <p className="error">{errorMessage}</p>}
-        <div id="qr-code" className="qr-code-container">
+        <div id="qr-code">
           {loading ? (
             <p>Loading QR code...</p>
           ) : (
