@@ -6,7 +6,7 @@ import fs from 'fs';
 const __dirname = path.resolve();
 const credentialsPath = path.join(
   __dirname,
-  'comlab-monitoring-4ecec-a1e7074749a3.json' // Ensure this file exists at this path
+  'comlab-monitoring-4ecec-1d17ce82f9c7.json' // Ensure this file exists at this path
 );
 
 // Load credentials safely
@@ -29,7 +29,7 @@ const sheets = google.sheets({ version: 'v4', auth });
 
 // Spreadsheet details
 const SPREADSHEET_ID = '1p8Dw9nUbe7HElDqWExpqqpl7PC-VjbxTi8S4oof_MXk';
-const RANGE = 'Sheet1!A:B';
+const RANGE = 'Sheet1!A:C';
 
 // Express Router Setup
 import express from 'express';
