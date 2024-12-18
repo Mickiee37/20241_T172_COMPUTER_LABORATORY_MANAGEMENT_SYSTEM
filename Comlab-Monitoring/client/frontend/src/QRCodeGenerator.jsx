@@ -3,6 +3,11 @@ import QRCode from 'react-qr-code';
 import moment from 'moment';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
+import { Link, useNavigate } from 'react-router-dom'; // Add this import
+import { RiComputerLine } from 'react-icons/ri';
+import { IoPersonSharp } from 'react-icons/io5';
+import { FaQrcode } from 'react-icons/fa';
+import { MdHistory } from 'react-icons/md';
 import './QRCodeGenerator.css';
 
 const QRCodeGenerator = () => {
@@ -11,6 +16,10 @@ const QRCodeGenerator = () => {
   const [qrData, setQrData] = useState(''); // Holds the generated QR Code value
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const handleLogout = () => {
+    navigate("/");
+  };
 
   const generateQRCode = async () => {
   const trimmedInput = inputValue.trim(); // Trim any extra whitespace
@@ -87,6 +96,36 @@ const downloadQRCode = () => {
 };
 
   return (
+    <div>
+       <nav className="navbar fixed-top navbar-expand-lg bg-black">
+        <div className="container">
+          {/* Left: Brand */}
+          <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
+          {/* Center: Icons and Labels */}
+          <div className="navbar-center">
+            <Link to="/Dashboard" className="navbar-item">
+              <RiComputerLine className="icon computer-icon" />
+              <span className="icon-label">Computer Lab</span>
+            </Link>
+            <Link to="/app" className="navbar-item">
+              <IoPersonSharp className="icon person-icon" />
+              <span className="icon-label">Instructor Menu</span>
+            </Link>
+            <Link to="/qr-code" className="navbar-item">
+              <FaQrcode className="icon qr-icon" />
+              <span className="icon-label">QR Generator</span>
+            </Link>
+            <Link to="/qr-code" className="navbar-item">
+              <MdHistory className="icon history-icon" />
+              <span className="icon-label">History Log</span>
+            </Link>
+          </div>
+          {/* Right: Logout Button */}
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </nav>
     <div className="container">
       <div className="box">
         <h3>QR Code Generator</h3>
@@ -131,6 +170,7 @@ const downloadQRCode = () => {
           Download QR Code
         </button>
       </div>
+    </div>
     </div>
   );
 };
