@@ -64,18 +64,22 @@ const deleteInstructor = async (req, res) => {
 
 const updateInstructor = async (req, res) => {
     try {
-        const { id } = req.params; 
-        const updateData = req.body; 
+        const { id } = req.params;
+        const { version, ...updateData } = req.body; // Extract the version
 
+        // Find the instructor by ID and version
+        const instructor = await Instructor.findOne({ id, version });
+        if (!instructor) {
+            return res.status(409).json({ message: "Conflict detected. Instructor has been updated by another transaction." });
+        }
+
+        // Increment the version and apply updates
+        updateData.version = version + 1;
         const updatedInstructor = await Instructor.findOneAndUpdate(
-            { id }, 
-            updateData, 
+            { id, version }, // Match by ID and current version
+            updateData,
             { new: true }
         );
-
-        if (!updatedInstructor) {
-            return res.status(404).json({ message: "Instructor not found" });
-        }
 
         res.status(200).json({ message: "Instructor updated successfully", instructor: updatedInstructor });
     } catch (error) {
@@ -83,6 +87,5 @@ const updateInstructor = async (req, res) => {
         res.status(500).json({ message: "Failed to update instructor" });
     }
 };
-
 
 export { getInstructors, getInstructor, postInstructor, deleteInstructor, updateInstructor };
