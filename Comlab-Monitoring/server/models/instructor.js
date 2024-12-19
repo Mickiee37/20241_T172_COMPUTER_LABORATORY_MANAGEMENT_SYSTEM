@@ -11,7 +11,7 @@ const instructorSchema = new Schema(
     timeOut: { type: Date },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 

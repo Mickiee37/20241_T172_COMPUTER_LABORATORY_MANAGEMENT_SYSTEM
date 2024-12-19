@@ -1,176 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
 import moment from 'moment';
 import axios from 'axios';
-import html2canvas from 'html2canvas';
-import { Link, useNavigate } from 'react-router-dom'; // Add this import
-import { RiComputerLine } from 'react-icons/ri';
-import { IoPersonSharp } from 'react-icons/io5';
-import { FaQrcode } from 'react-icons/fa';
-import { MdHistory } from 'react-icons/md';
-import './QRCodeGenerator.css';
+import html2canvas from 'html2canvas'; // Import html2canvas
 
 const QRCodeGenerator = () => {
-  const [qrType, setQrType] = useState('instructor'); // 'instructor' or 'comlab'
-  const [inputValue, setInputValue] = useState(''); // Instructor name or lab number
-  const [qrData, setQrData] = useState(''); // Holds the generated QR Code value
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [instructorName, setInstructorName] = useState('');
+  const [qrData, setQrData] = useState(''); // Data for frontend-generated QR code
   const [loading, setLoading] = useState(false);
+  const [serverData, setServerData] = useState(null); // Data fetched from the server
 
-  const handleLogout = () => {
-    navigate("/");
+  // Handle QR Code generation
+  const fetchServerQRCode = async () => {
+    if (!instructorName) {
+      alert("Please enter an instructor name!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const timeIn = moment().format('YYYY-MM-DD HH:mm:ss');
+      // Send request to the backend to generate the QR code
+      const response = await axios.get('http://localhost:8000/api/qr-code', {
+        params: {
+          instructorName,
+          timeIn,
+        },
+      });
+
+      if (response.data.qrCodeUrl) {
+        setServerData(response.data.qrCodeUrl);
+      }
+    } catch (error) {
+      console.error('Error fetching QR code from server:', error);
+      alert("Error fetching QR code from server.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const generateQRCode = async () => {
-  const trimmedInput = inputValue.trim(); // Trim any extra whitespace
-  if (!trimmedInput || (qrType === 'comlab' && (isNaN(trimmedInput) || trimmedInput < 1 || trimmedInput > 10))) {
-    setErrorMessage(
-      `Please enter a valid ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number (1–10)'}!`
-    );
-    return;
-  }
-
-  setLoading(true);
-  setErrorMessage(null);  
-  setQrData(''); 
-
-  try {
-    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-
-    if (qrType === 'comlab') {
-      // Backend API call to validate lab number
-      const response = await axios.get(
-        `http://192.168.194.244:8000/api/labs/validate-lab/${trimmedInput}`
-      );
-
-      if (response.status === 200) {
-        // Create QR payload for lab
-        const qrPayload = JSON.stringify({
-          type: 'labKey',
-          labNumber: trimmedInput,
-          timestamp: currentTime,
-        });
-
-        setQrData(qrPayload);
-        console.log('Generated Lab QR Code Payload:', qrPayload);
-      } else {
-        setErrorMessage(`Lab ${trimmedInput} does not exist.`);
-      }
-    } else if (qrType === 'instructor') {
-      // Create instructor QR URL
-      const qrValue = `http://192.168.194.244:8000/api/qr-code/scan?name=${encodeURIComponent(
-        trimmedInput
-      )}&timeIn=${encodeURIComponent(currentTime)}`;
-
-      setQrData(qrValue);
-      console.log('Generated Instructor QR Code:', qrValue);
+  useEffect(() => {
+    if (!serverData && instructorName) {
+      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+      setQrData(JSON.stringify({ name: instructorName, timeIn: currentTime }));
     }
-  } catch (error) {
-    console.error('Error generating QR code:', error.message);
+  }, [instructorName, serverData]);
 
-    if (error.response && error.response.status === 404) {
-      setErrorMessage(`Lab ${trimmedInput} does not exist.`);
-    } else {
-      setErrorMessage('Error generating QR code. Please try again.');
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-const downloadQRCode = () => {
-  const qrCodeElement = document.getElementById('qr-code');
+  // Handle download of the QR code as an image
+  const downloadQRCode = () => {
+    const qrCodeElement = document.getElementById('qr-code'); // Get the QR code element
 
-  // Check if QR code exists before downloading
-  if (!qrCodeElement) {
-    setErrorMessage('No QR code to download.');
-    return;
-  }
-
-  // Capture the QR code element as an image and download
-  html2canvas(qrCodeElement).then((canvas) => {
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL();
-    link.download = `${qrType}-${inputValue.trim()}-qr-code.png`;
-    link.click();
-  });
-};
+    html2canvas(qrCodeElement).then((canvas) => {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL(); // Get image data
+      link.download = 'qr-code.png'; // Set download filename
+      link.click(); // Trigger the download
+    });
+  };
 
   return (
     <div>
-       <nav className="navbar fixed-top navbar-expand-lg bg-black">
-        <div className="container">
-          {/* Left: Brand */}
-          <a className="navbar-brand text-white">Computer Laboratory Monitoring System</a>
-          {/* Center: Icons and Labels */}
-          <div className="navbar-center">
-            <Link to="/Dashboard" className="navbar-item">
-              <RiComputerLine className="icon computer-icon" />
-              <span className="icon-label">Computer Lab</span>
-            </Link>
-            <Link to="/app" className="navbar-item">
-              <IoPersonSharp className="icon person-icon" />
-              <span className="icon-label">Instructor Menu</span>
-            </Link>
-            <Link to="/qr-code" className="navbar-item">
-              <FaQrcode className="icon qr-icon" />
-              <span className="icon-label">QR Generator</span>
-            </Link>
-            <Link to="/qr-code" className="navbar-item">
-              <MdHistory className="icon history-icon" />
-              <span className="icon-label">History Log</span>
-            </Link>
+      <h3>Enter Instructor Name:</h3>
+      <input
+        type="text"
+        value={instructorName}
+        onChange={(e) => setInstructorName(e.target.value)}
+        placeholder="Enter Instructor Name"
+        className="form-control"
+      />
+
+      <p>Time In: {moment().format('YYYY-MM-DD HH:mm:ss')}</p>
+
+      <div>
+        {loading ? (
+          <p>Loading QR code...</p>
+        ) : serverData ? (
+          <div>
+            <p>QR Code fetched from Server</p>
+            <img src={serverData} alt="Instructor QR Code" />
           </div>
-          {/* Right: Logout Button */}
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </nav>
-    <div className="container">
-      <div className="box">
-        <h3>QR Code Generator</h3>
-        <div className="form-group">
-          <label htmlFor="qrType">Select QR Code Type:</label>
-          <select
-            id="qrType"
-            value={qrType}
-            onChange={(e) => setQrType(e.target.value)}
-            className="form-control"
-          >
-            <option value="instructor">Instructor</option>
-            <option value="comlab">Comlab</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="inputValue">
-            Enter {qrType === 'instructor' ? 'Instructor Name' : 'Lab Number'}:
-          </label>
-          <input
-            id="inputValue"
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder={`Enter ${qrType === 'instructor' ? 'Instructor Name' : 'Lab Number (1–10)'}`}
-            className="form-control"
-          />
-        </div>
-        <p>Time: {moment().format('YYYY-MM-DD HH:mm:ss')}</p>
-        {errorMessage && <p className="error">{errorMessage}</p>}
-        <div id="qr-code">
-          {loading ? (
-            <p>Loading QR code...</p>
-          ) : (
-            qrData && <QRCode value={qrData} />
-          )}
-        </div>
-        <button onClick={generateQRCode} className="btn btn-primary">
-          Generate QR Code
-        </button>
-        <button onClick={downloadQRCode} className="btn btn-success" disabled={!qrData}>
-          Download QR Code
-        </button>
+        ) : (
+          <div>
+            <p>QR Code generator</p>
+            <div id="qr-code"> {/* Add an id for capturing the QR code */}
+              <QRCode value={qrData} />
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+
+      <button onClick={fetchServerQRCode} className="btn btn-primary">Fetch Server QR Code</button>
+      <button onClick={downloadQRCode} className="btn btn-success mt-3">Download QR Code</button>
     </div>
   );
 };
