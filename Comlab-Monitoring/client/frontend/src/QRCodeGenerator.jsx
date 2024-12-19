@@ -31,7 +31,7 @@ const QRCodeGenerator = () => {
   }
 
   setLoading(true);
-  setErrorMessage(null);
+  setErrorMessage(null);  
   setQrData(''); 
 
   try {

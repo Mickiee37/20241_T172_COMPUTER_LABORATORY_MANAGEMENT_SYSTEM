@@ -6,30 +6,30 @@ import path from 'path';
 import fs from 'fs';
 import dns from 'dns';
 
+
 // Set Google DNS Resolver to avoid ENOTFOUND errors
 dns.setServers(['8.8.8.8', '8.8.4.4']);
+
+// Override Gaxios Transporter globally
 
 // Constants for Google Sheets
 const SPREADSHEET_ID = '1p8Dw9nUbe7HElDqWExpqqpl7PC-VjbxTi8S4oof_MXk';
 const RANGE = 'Sheet1!A:B';
 
-// Path to your Google Service Account JSON file
 const credentialsPath = path.resolve('./comlab-monitoring-4ecec-1d17ce82f9c7.json');
 const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
 
-// Configure Google Sheets API
+// Use GoogleAuth for service account
 const auth = new google.auth.GoogleAuth({
-  credentials: credentials,
+  credentials: credentials, // Service account credentials
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
+// Initialize Google Sheets API
 const sheets = google.sheets({
   version: 'v4',
   auth,
-  rootUrl: 'https://sheets.googleapis.com', // Ensure this is set explicitly
 });
-
-
 // Helper function to append data to Google Sheets
 const appendToGoogleSheet = async (spreadsheetId, range, values) => {
   try {
@@ -38,9 +38,7 @@ const appendToGoogleSheet = async (spreadsheetId, range, values) => {
       spreadsheetId,
       range,
       valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [values],
-      },
+      requestBody: { values: [values] },
     });
     console.log('Data appended successfully:', response.data);
   } catch (error) {
@@ -48,7 +46,6 @@ const appendToGoogleSheet = async (spreadsheetId, range, values) => {
     throw new Error(`Google Sheets Error: ${error.message}`);
   }
 };
-
 // Generate Instructor QR Code
 export const generateInstructorQR = async (req, res) => {
   try {

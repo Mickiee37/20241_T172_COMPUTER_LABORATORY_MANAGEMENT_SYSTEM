@@ -97,31 +97,46 @@ const App = () => {
     setNewInstructorPut((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleUpdateSubmit = async (e) => {
+  const handleUpdateSubmit = async (e) => {
     e.preventDefault();
+  
     if (!validateEmail(newInstructorPut.email)) {
-        console.error("Invalid email. '@buksu.edu.ph' emails are allowed.");
-        return;
+      console.error("Invalid email. '@buksu.edu.ph' emails are allowed.");
+      return;
     }
+  
     try {
-        const response = await fetch(`http://192.168.194.244:8000/api/instructor/${newInstructorPut.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newInstructorPut) // Send version in the request
-        });
-
-        if (response.status === 409) {
-            alert("Conflict detected: This record was updated by someone else. Please reload and try again.");
-        } else if (!response.ok) {
-            throw new Error('Failed to update instructor');
+      console.log("Submitting Update:", newInstructorPut);
+      const response = await fetch(
+        `http://192.168.194.244:8000/api/instructor/${newInstructorPut.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: newInstructorPut.id,
+            name: newInstructorPut.name,
+            lastname: newInstructorPut.lastname,
+            email: newInstructorPut.email,
+            version: newInstructorPut.version, // Ensure version is sent
+          }),
         }
-
-        await fetchInstructors();
-        setNewInstructorPut({ id: '', name: '', lastname: '', email: '', version: 0 });
+      );
+  
+      if (response.status === 409) {
+        alert(
+          "Conflict detected: This record was updated by someone else. Please reload and try again."
+        );
+      } else if (!response.ok) {
+        throw new Error('Failed to update instructor');
+      }
+  
+      await fetchInstructors(); // Refresh instructor list
+      setNewInstructorPut({ id: '', name: '', lastname: '', email: '', version: 0 });
+      setActiveForm(null); // Close the form
     } catch (error) {
-        console.error('Error updating instructor:', error);
+      console.error('Error updating instructor:', error);
     }
-};
+  };
   const handleDeleteChange = (e) => {
     setDeleteId(e.target.value);
   };
@@ -152,13 +167,13 @@ const handleUpdateSubmit = async (e) => {
   const handleUpdateClick = (instructor) => {
     setActiveForm('update');
     setNewInstructorPut({
-        id: instructor.id,
-        name: instructor.name,
-        lastname: instructor.lastname,
-        email: instructor.email,
-        version: instructor.version, // Include version field
+      id: instructor.id,
+      name: instructor.name,
+      lastname: instructor.lastname,
+      email: instructor.email,
+      version: instructor.__v, // Use the correct version key from Mongoose
     });
-};
+  };  
   const handleDeleteClick = (id) => {
     setActiveForm('delete');
     setDeleteId(id);
@@ -347,7 +362,7 @@ const handleUpdateSubmit = async (e) => {
       <div className="text-center">
         <button type="submit" className="btn btn-primary btn-sm w-25">Add Instructor</button>
       </div>
-    </form>
+    </form> 
   </div>
 )}
 

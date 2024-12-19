@@ -4,14 +4,14 @@ import Instructor from "../models/instructor.js";
 // Get all instructors
 const getInstructors = async (req, res) => {
     try {
-        const instructors = await Instructor.find();
-        console.log(instructors);
-        res.status(200).json(instructors);
+      const instructors = await Instructor.find(); // Fetch all instructors
+      res.status(200).json(instructors); // Send the full instructor data (including version)
     } catch (error) {
-        console.error("Error fetching instructors:", error);
-        res.status(500).json({ message: "Failed to fetch instructors" });
+      console.error("Error fetching instructors:", error);
+      res.status(500).json({ message: "Failed to fetch instructors" });
     }
-};
+  };
+  
 
 const getInstructor = async (req, res) => {
     try {
@@ -28,21 +28,23 @@ const getInstructor = async (req, res) => {
 // Add a new instructor
 const postInstructor = async (req, res) => {
     try {
-        
         const { id, name, lastname, email } = req.body;
-        if (!id, !name || !lastname || !email) {
-            return res.status(400).json({ message: "Missing required fields: name, lastname, and email" });
+
+        if (!id || !name || !lastname || !email) { // Validate fields
+            return res.status(400).json({ message: "Missing required fields: id, name, lastname, and email" });
         }
-        const existingInstructor = await Instructor.findOne({ email });
+
+        const existingInstructor = await Instructor.findOne({ id });
         if (existingInstructor) {
-            return res.status(400).json({ message: "Instructor with this email already exists" });
+            return res.status(400).json({ message: "Instructor with this ID already exists" });
         }
+
         const instructor = new Instructor(req.body);
         const savedInstructor = await instructor.save();
-        res.status(201).json(savedInstructor); 
+        res.status(201).json(savedInstructor);
     } catch (error) {
-        console.error("Error adding instructor:", error);
-        res.status(500).json({ message: "Failed to add instructor" });
+        console.error("Error adding instructor:", error.message);
+        res.status(500).json({ message: "Server error while adding instructor" });
     }
 };
 
@@ -61,31 +63,33 @@ const deleteInstructor = async (req, res) => {
         res.status(500).json({ message: "Failed to delete instructor" });
     }
 };
-
 const updateInstructor = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { version, ...updateData } = req.body; // Extract the version
-
-        // Find the instructor by ID and version
-        const instructor = await Instructor.findOne({ id, version });
-        if (!instructor) {
-            return res.status(409).json({ message: "Conflict detected. Instructor has been updated by another transaction." });
-        }
-
-        // Increment the version and apply updates
-        updateData.version = version + 1;
-        const updatedInstructor = await Instructor.findOneAndUpdate(
-            { id, version }, // Match by ID and current version
-            updateData,
-            { new: true }
-        );
-
-        res.status(200).json({ message: "Instructor updated successfully", instructor: updatedInstructor });
+      const { id } = req.params;
+      const { version, ...updateData } = req.body;
+  
+      // Match by ID and version for Optimistic Concurrency Control
+      const updatedInstructor = await Instructor.findOneAndUpdate(
+        { id, __v: version },
+        { $set: updateData, $inc: { __v: 1 } }, // Increment version
+        { new: true }
+      );
+  
+      if (!updatedInstructor) {
+        return res.status(409).json({
+          message: "Conflict detected. Instructor has been updated by someone else.",
+        });
+      }
+  
+      res.status(200).json({
+        message: "Instructor updated successfully",
+        instructor: updatedInstructor,
+      });
     } catch (error) {
-        console.error("Error updating instructor:", error);
-        res.status(500).json({ message: "Failed to update instructor" });
+      console.error("Error updating instructor:", error.message);
+      res.status(500).json({ message: "Server error while updating instructor" });
     }
-};
-
+  };
+  
+  
 export { getInstructors, getInstructor, postInstructor, deleteInstructor, updateInstructor };
